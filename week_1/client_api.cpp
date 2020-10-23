@@ -2,7 +2,7 @@
 #include<filesystem>
 #include<fstream>
 #include<string>
-#include "UFclass.h"
+#include "UFclass.hpp"
 
 int main(int argc, char* argv[]){
 	std::cout<< "This program is to test the algorithm for dynamic connection problem"<<std::endl;
