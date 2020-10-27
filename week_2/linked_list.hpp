@@ -38,8 +38,8 @@ Node<T>::Node(T T_val){
 */
 
 template <class T>
-Node<T>::Node(T){
-	data=T();
+Node<T>::Node(T val){
+	data=val;
 	next=new T;
 
 }
@@ -56,5 +56,5 @@ LinkedList<T>::~LinkedList(){};
 template <class T>
 LinkedList<T>::LinkedList(T){
 	head= new Node<T>();
-	tail= new Node<T>();
+	tail= head;
 };
