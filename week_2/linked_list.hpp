@@ -1,3 +1,5 @@
+#include <memory>
+#include<string>
 
 #ifndef LINKED_LIST_HPP
 #define LINKED_LIST_HPP
@@ -10,7 +12,7 @@ class Node{
 		Node(T);
 		~Node();
 		T data;
-		T* next;
+		Node<T>* next;
 
 };
 
@@ -20,8 +22,8 @@ class LinkedList{
 		LinkedList();
 		LinkedList(T);
 		~LinkedList();
-		Node<T>* head;
-		Node<T>* tail;
+		std::shared_ptr< Node<T> > head;
+		std::shared_ptr< Node<T> > tail;
 };
 
 #endif
@@ -40,21 +42,39 @@ Node<T>::Node(T T_val){
 template <class T>
 Node<T>::Node(T val){
 	data=val;
-	next=new T;
+	
+	next=nullptr;
+	
+	
+	
 
 }
 
 template <class T>
-Node<T>::~Node(){};
+Node<T>::~Node(){
+	std::string val = std::to_string(data);
+	std::cout<<"Now delete the: "<< val <<std::endl;
+	std::cout<<this<<std::endl;
+	//next=nullptr;
+	
+	std::cout << "Object deleted" <<std::endl;
+	std::cout << "-----------" <<std::endl;
+};
 
 template <class T>
-LinkedList<T>::LinkedList(){};
+LinkedList<T>::LinkedList(){
+	std::cout<< "Now initialize the linkedlist 1"<<std::endl;
+	head = std::make_shared< Node<T> >();
+	tail= head;
+};
 
 template <class T>
 LinkedList<T>::~LinkedList(){};
 
 template <class T>
-LinkedList<T>::LinkedList(T){
-	head= new Node<T>();
+LinkedList<T>::LinkedList(T val){
+	std::cout<< "Now initialize the linkedlist 1"<<std::endl;
+	Node<T> head_node= Node<T>(val);
+	head= std::make_shared<Node<T> >( head_node);
 	tail= head;
 };
