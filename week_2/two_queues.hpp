@@ -1,4 +1,4 @@
-
+#include <exception>
 #include "linked_list.hpp"
 #include <iterator>
 
@@ -18,7 +18,7 @@ class DequeIterator: public std::iterator< std::forward_iterator_tag, T >
 		DequeIterator& operator= (const DequeIterator& );
 };
 
-template <class T> class Deque{
+template <typename T> class Deque: public LinkedList<T>{
 	public:
 		Deque();
 		Deque(T);
@@ -37,16 +37,70 @@ template <class T> class Deque{
 
 #endif
 
-template<class T>
+template<typename T>
 Deque<T>::Deque(){
 }
 
-template<class T>
+template<typename T>
 Deque<T>::~Deque(){
 }
 
-template<class T>
-Deque<T>::Deque(T){
-	LinkedList<T>();
+template<typename T>
+Deque<T>::Deque(T val):LinkedList<T>(val){
+	//Used the LinkedList constructor to initialized the 
+	//head node and tail node
+	
+}
+
+template<typename T>
+bool Deque<T>::isEmpty(){
+        return LinkedList<T>::head == nullptr;
+}
+
+template<typename T>
+int Deque<T>::size(){
+	int length{0};
+	if(isEmpty()){return length;}
+
+	Node<T>* tmp= LinkedList<T>::head;
+	while(tmp!= nullptr){
+		tmp=tmp->next;
+		++length;
+	}
+	return length;
+}
+
+template<typename T>
+void Deque<T>::addFirst(T const& val){
+	Node<T>* new_head= new Node<T>(val);
+	if(!isEmpty()){
+		new_head->next=LinkedList<T>::head;
+	}else{
+		LinkedList<T>::tail = new_head;
+	}
+	LinkedList<T>::head = new_head;
+}
+
+template<typename T>
+void Deque<T>::addLast(T const& val){
+	Node<T>* new_tail= new Node<T>(val);
+	if(!isEmpty()){
+		LinkedList<T>::tail->next =  new_tail;
+	}else{
+		LinkedList<T>::head= new_tail;
+	}
+		LinkedList<T>::tail = new_tail;
+}
+
+template<typename T>
+T Deque<T>::removeFirst(){
+	if(isEmpty()){
+		throw std::logic_error("emptyDequeError");
+	}
+	T first_item = LinkedList<T>::head->data;
+	Node<T>* old_head= LinkedList<T>::head;
+	LinkedList<T>::head= LinkedList<T>::head->next;
+	delete old_head;
+	return first_item;
 }
 
