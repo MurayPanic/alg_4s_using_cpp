@@ -78,5 +78,46 @@ TEST(DequeTest,checkAddLast){
 
 TEST(DequeTest, checkRemoreFirst){
         Deque<int> deque_ins{};
-	EXPECT_THROW(deque_ins.removeFirst(), std::logic_error);
+		EXPECT_THROW(deque_ins.removeFirst(), std::logic_error);
+		deque_ins.addFirst(10);
+		deque_ins.addLast(20);
+		EXPECT_EQ(10, deque_ins.head->data);
+		EXPECT_EQ(20, deque_ins.tail->data);
+		deque_ins.addFirst(30);
+		deque_ins.addLast(40);
+		EXPECT_EQ(30, deque_ins.head->data);
+		EXPECT_EQ(40, deque_ins.tail->data);
+		deque_ins.removeFirst();
+		EXPECT_EQ(10, deque_ins.head->data);
+		deque_ins.removeFirst();
+		EXPECT_EQ(20, deque_ins.head->data);
+		deque_ins.removeFirst();
+		EXPECT_EQ(40, deque_ins.head->data);
+		deque_ins.removeFirst();
+		EXPECT_EQ(0,deque_ins.size());
+		EXPECT_THROW(deque_ins.removeFirst(), std::logic_error);
+		
+}
+
+TEST(DequeTest, checkRemoveLast){
+		Deque<int> deque_ins{};
+		EXPECT_THROW(deque_ins.removeLast(), std::logic_error);
+		deque_ins.addFirst(10);
+		deque_ins.addLast(20);
+		EXPECT_EQ(10, deque_ins.head->data);
+		EXPECT_EQ(20, deque_ins.tail->data);
+		deque_ins.addFirst(30);
+		deque_ins.addLast(40);
+		EXPECT_EQ(30, deque_ins.head->data);
+		EXPECT_EQ(40, deque_ins.tail->data);
+		deque_ins.removeLast();
+		EXPECT_EQ(20, deque_ins.tail->data);
+		deque_ins.removeLast();
+		EXPECT_EQ(10, deque_ins.tail->data);
+		deque_ins.removeLast();
+		EXPECT_EQ(30, deque_ins.tail->data);
+		deque_ins.removeLast();
+		EXPECT_EQ(0,deque_ins.size());
+		EXPECT_THROW(deque_ins.removeLast(), std::logic_error);
+
 }

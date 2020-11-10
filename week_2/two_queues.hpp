@@ -5,7 +5,7 @@
 #ifndef TWO_QUEUES_HPP
 #define TWO_QUEUES_HPP
 
-template <class T > 
+template <typename T > 
 class DequeIterator: public std::iterator< std::forward_iterator_tag, T >
 {   
 	
@@ -103,4 +103,28 @@ T Deque<T>::removeFirst(){
 	delete old_head;
 	return first_item;
 }
+
+template<typename T>
+T Deque<T>::removeLast(){
+	
+	if(isEmpty()){
+		throw std::logic_error("emptyDequeError");
+	}
+	T last_item = LinkedList<T>::tail->data;
+	Node<T>* old_tail = LinkedList<T>::tail;
+	Node<T>* pointer =  LinkedList<T>::head;
+	while(pointer!=nullptr && pointer->next != old_tail){
+		pointer=pointer->next;
+	}
+	LinkedList<T>::tail = pointer;
+	if (LinkedList<T>::tail==nullptr){LinkedList<T>::head=nullptr;}
+	delete old_tail;
+	return last_item;
+}
+
+template<typename T>
+DequeIterator<T>:: DequeIterator(){
+
+}
+
 
