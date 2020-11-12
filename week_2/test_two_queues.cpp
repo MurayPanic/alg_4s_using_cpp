@@ -121,3 +121,27 @@ TEST(DequeTest, checkRemoveLast){
 		EXPECT_THROW(deque_ins.removeLast(), std::logic_error);
 
 }
+
+TEST (DequeTest, checkIterator){
+	Deque<int> deque_ins(10);
+	EXPECT_EQ(10, deque_ins.head->data);
+	std::cout<< "The head is :"<<deque_ins.head->data <<std::endl;
+	auto iter_1 = deque_ins.iterator();
+	std::cout<< "The iter is: "<< iter_1.iter->data <<std::endl;
+	EXPECT_EQ(10, iter_1.iter->data);
+	Deque<int> deque_ins_2{};
+	auto iter_2= deque_ins_2.iterator();
+	EXPECT_EQ(nullptr, iter_2.iter );
+	deque_ins_2.addLast(20);
+	deque_ins_2.addLast(30);
+	auto iter_3 = deque_ins_2.iterator();
+	EXPECT_EQ(20, iter_3.iter->data);
+	++iter_3;
+	EXPECT_EQ(30, iter_3.iter->data);
+	DequeIterator<int> iter_4{};
+	iter_4= iter_3;
+	EXPECT_EQ(30, iter_4.iter->data);
+	
+	
+
+}

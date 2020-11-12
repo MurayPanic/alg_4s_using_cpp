@@ -14,8 +14,15 @@ class DequeIterator: public std::iterator< std::forward_iterator_tag, T >
     public:
 	    DequeIterator();
 		DequeIterator (const DequeIterator& );
+		DequeIterator (Node<T>*  );
 	    ~DequeIterator();
-		DequeIterator& operator= (const DequeIterator& );
+		DequeIterator& operator= (const DequeIterator<T>& );
+		DequeIterator& operator++();
+		DequeIterator& operator++(int);
+		
+	
+		Node<T>* iter;
+
 };
 
 template <typename T> class Deque: public LinkedList<T>{
@@ -123,7 +130,41 @@ T Deque<T>::removeLast(){
 }
 
 template<typename T>
-DequeIterator<T>:: DequeIterator(){
+DequeIterator<T> Deque<T>::iterator(){
+	DequeIterator<T> iter_ins( LinkedList<T>::head);
+	return iter_ins;
+}
+
+
+template<typename T>
+DequeIterator<T>::DequeIterator(){
+	iter= nullptr;
+}
+
+template<typename T>
+DequeIterator<T>::~DequeIterator(){
+	
+}
+template<typename T>
+DequeIterator<T>::DequeIterator( Node<T>* head_pointer){
+	iter= head_pointer;
+}
+
+template<typename T>
+DequeIterator<T>& DequeIterator<T>::operator ++ (){
+		if (iter->next != nullptr){
+			iter=iter->next;
+			return *this;
+		}else{
+			throw std::logic_error("EndOfDeque");
+		}
+		
+}
+
+template<typename T>
+DequeIterator<T>& DequeIterator<T>::operator = (const DequeIterator<T>&  DI_ins){
+            iter = DI_ins.iter;
+			return *this;
 
 }
 
