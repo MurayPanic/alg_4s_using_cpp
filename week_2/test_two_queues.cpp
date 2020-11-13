@@ -78,7 +78,7 @@ TEST(DequeTest,checkAddLast){
 
 TEST(DequeTest, checkRemoreFirst){
         Deque<int> deque_ins{};
-		EXPECT_THROW(deque_ins.removeFirst(), std::logic_error);
+		EXPECT_THROW(deque_ins.removeFirst(), NoSuchElementException);
 		deque_ins.addFirst(10);
 		deque_ins.addLast(20);
 		EXPECT_EQ(10, deque_ins.head->data);
@@ -95,13 +95,13 @@ TEST(DequeTest, checkRemoreFirst){
 		EXPECT_EQ(40, deque_ins.head->data);
 		deque_ins.removeFirst();
 		EXPECT_EQ(0,deque_ins.size());
-		EXPECT_THROW(deque_ins.removeFirst(), std::logic_error);
+		EXPECT_THROW(deque_ins.removeFirst(), NoSuchElementException);
 		
 }
 
 TEST(DequeTest, checkRemoveLast){
 		Deque<int> deque_ins{};
-		EXPECT_THROW(deque_ins.removeLast(), std::logic_error);
+		EXPECT_THROW(deque_ins.removeLast(), NoSuchElementException);
 		deque_ins.addFirst(10);
 		deque_ins.addLast(20);
 		EXPECT_EQ(10, deque_ins.head->data);
@@ -118,30 +118,40 @@ TEST(DequeTest, checkRemoveLast){
 		EXPECT_EQ(30, deque_ins.tail->data);
 		deque_ins.removeLast();
 		EXPECT_EQ(0,deque_ins.size());
-		EXPECT_THROW(deque_ins.removeLast(), std::logic_error);
+		EXPECT_THROW(deque_ins.removeLast(), NoSuchElementException);
 
 }
 
 TEST (DequeTest, checkIterator){
 	Deque<int> deque_ins(10);
 	EXPECT_EQ(10, deque_ins.head->data);
-	std::cout<< "The head is :"<<deque_ins.head->data <<std::endl;
+	//std::cout<< "The head is :"<<deque_ins.head->data <<std::endl;
 	auto iter_1 = deque_ins.iterator();
-	std::cout<< "The iter is: "<< iter_1.iter->data <<std::endl;
+	//std::cout<< "The iter is: "<< iter_1.iter->data <<std::endl;
 	EXPECT_EQ(10, iter_1.iter->data);
 	Deque<int> deque_ins_2{};
 	auto iter_2= deque_ins_2.iterator();
 	EXPECT_EQ(nullptr, iter_2.iter );
 	deque_ins_2.addLast(20);
 	deque_ins_2.addLast(30);
+	deque_ins_2.addLast(40);
 	auto iter_3 = deque_ins_2.iterator();
 	EXPECT_EQ(20, iter_3.iter->data);
 	++iter_3;
 	EXPECT_EQ(30, iter_3.iter->data);
 	DequeIterator<int> iter_4{};
-	iter_4= iter_3;
+	iter_4= iter_3++;
 	EXPECT_EQ(30, iter_4.iter->data);
+	EXPECT_THROW(++iter_3, NoSuchElementException);
 	
 	
+
+}
+
+TEST (RandomizedQueueTest, checkConstructor){
+	RandomizedQueue<int> RQ_ins{};
+	EXPECT_EQ(nullptr, RQ_ins.arr);
+	RandomizedQueue<int> RQ_ins_2(10);
+	EXPECT_EQ(10, RQ_ins.arr[0]);
 
 }

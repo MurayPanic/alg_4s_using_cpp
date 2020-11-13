@@ -1,7 +1,7 @@
 #include <exception>
 #include "linked_list.hpp"
 #include <iterator>
-
+#include <memory>
 #ifndef TWO_QUEUES_HPP
 #define TWO_QUEUES_HPP
 
@@ -25,7 +25,8 @@ class DequeIterator: public std::iterator< std::forward_iterator_tag, T >
 
 };
 
-template <typename T> class Deque: public LinkedList<T>{
+template <typename T> 
+class Deque: public LinkedList<T>{
 	public:
 		Deque();
 		Deque(T);
@@ -38,6 +39,44 @@ template <typename T> class Deque: public LinkedList<T>{
 		T removeLast();
 		friend class DequeIterator<T>;
 		DequeIterator<T> iterator();
+};
+
+template<typename T>
+class RandomizedQueueIterator: public std::iterator< std::forward_iterator_tag, T>
+{
+	public: 
+		RandomizedQueueIterator();
+		~RandomizedQueueIterator();
+		RandomizedQueueIterator& operator++();
+		RandomizedQueueIterator& operator++(int);
+		Node<T>* iter;
+};
+
+template<typename T>
+class RandomizedQueue {
+	public:
+		RandomizedQueue();
+		RandomizedQueue(T);
+		~RandomizedQueue();
+		int size();
+		void enqueue(T);
+		T dequeue();
+		T sample();
+		friend class RandomizedQueueIterator<T>;
+		RandomizedQueueIterator<T> iterator();
+		std::unique_ptr<T[]> arr;
+};
+
+
+class NoSuchElementException: public std::exception
+{
+	
+		const char* what() const throw ();
+};
+
+class IllegalArgumentException: public std::exception
+{
+		const char* what() const throw();
 };
 
 
@@ -80,6 +119,7 @@ int Deque<T>::size(){
 template<typename T>
 void Deque<T>::addFirst(T const& val){
 	Node<T>* new_head= new Node<T>(val);
+
 	if(!isEmpty()){
 		new_head->next=LinkedList<T>::head;
 	}else{
@@ -91,6 +131,7 @@ void Deque<T>::addFirst(T const& val){
 template<typename T>
 void Deque<T>::addLast(T const& val){
 	Node<T>* new_tail= new Node<T>(val);
+	
 	if(!isEmpty()){
 		LinkedList<T>::tail->next =  new_tail;
 	}else{
@@ -102,7 +143,7 @@ void Deque<T>::addLast(T const& val){
 template<typename T>
 T Deque<T>::removeFirst(){
 	if(isEmpty()){
-		throw std::logic_error("emptyDequeError");
+		throw NoSuchElementException();
 	}
 	T first_item = LinkedList<T>::head->data;
 	Node<T>* old_head= LinkedList<T>::head;
@@ -115,7 +156,7 @@ template<typename T>
 T Deque<T>::removeLast(){
 	
 	if(isEmpty()){
-		throw std::logic_error("emptyDequeError");
+		throw NoSuchElementException();
 	}
 	T last_item = LinkedList<T>::tail->data;
 	Node<T>* old_tail = LinkedList<T>::tail;
@@ -156,7 +197,22 @@ DequeIterator<T>& DequeIterator<T>::operator ++ (){
 			iter=iter->next;
 			return *this;
 		}else{
-			throw std::logic_error("EndOfDeque");
+			//throw std::logic_error("EndOfDeque");
+			throw NoSuchElementException();
+		}
+		
+}
+
+template<typename T>
+DequeIterator<T>& DequeIterator<T>::operator ++ (int){
+		
+		if (iter->next != nullptr){
+			DequeIterator<T>* temp = new DequeIterator<T>(iter);
+			iter= iter->next;
+			return *temp;
+		}else{
+			//throw std::logic_error("EndOfDeque");
+			throw NoSuchElementException();
 		}
 		
 }
@@ -169,3 +225,39 @@ DequeIterator<T>& DequeIterator<T>::operator = (const DequeIterator<T>&  DI_ins)
 }
 
 
+const char* NoSuchElementException::what() const throw(){
+         return "No such an element";
+
+}
+
+const char* IllegalArgumentException::what() const throw(){
+         return "Null element is not allowed";
+
+}
+
+
+template<typename T>
+RandomizedQueue<T>:: RandomizedQueue(){
+     arr=nullptr;
+
+}
+
+template<typename T>
+RandomizedQueue<T>::~RandomizedQueue(){
+     
+
+}
+
+template<typename T>
+RandomizedQueue<T>:: RandomizedQueue(T val){
+	 
+     arr=std::make_unique<T[]>(2);
+	 arr[0]=val;
+
+}
+
+template<typename T>
+int RandomizedQueue<T>::size(){
+
+	
+}
