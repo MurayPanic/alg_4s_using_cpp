@@ -1,7 +1,10 @@
 #include <exception>
-#include "linked_list.hpp"
 #include <iterator>
 #include <memory>
+#include <random>
+#include <algorithm>
+#include <climits>
+#include "linked_list.hpp"
 #ifndef TWO_QUEUES_HPP
 #define TWO_QUEUES_HPP
 
@@ -19,7 +22,8 @@ class DequeIterator: public std::iterator< std::forward_iterator_tag, T >
 		DequeIterator& operator= (const DequeIterator<T>& );
 		DequeIterator& operator++();
 		DequeIterator& operator++(int);
-		
+                bool has_next();
+                void next();		
 	
 		Node<T>* iter;
 
@@ -39,19 +43,14 @@ class Deque: public LinkedList<T>{
 		T removeLast();
 		friend class DequeIterator<T>;
 		DequeIterator<T> iterator();
+	private:
+		int deque_len;
 };
 
 template<typename T>
-class RandomizedQueueIterator: public std::iterator< std::forward_iterator_tag, T>
-{
-	public: 
-		RandomizedQueueIterator();
-		~RandomizedQueueIterator();
-		RandomizedQueueIterator& operator++();
-		RandomizedQueueIterator& operator++(int);
-		Node<T>* iter;
-};
+class RandomizedQueueIterator;
 
+			       
 template<typename T>
 class RandomizedQueue {
 	public:
@@ -64,7 +63,10 @@ class RandomizedQueue {
 		T sample();
 		friend class RandomizedQueueIterator<T>;
 		RandomizedQueueIterator<T> iterator();
+	private:
 		std::unique_ptr<T[]> arr;
+		int RQ_len;
+		int AV_len;
 };
 
 
@@ -85,6 +87,7 @@ class IllegalArgumentException: public std::exception
 
 template<typename T>
 Deque<T>::Deque(){
+	deque_len=0;
 }
 
 template<typename T>
@@ -93,11 +96,8 @@ Deque<T>::~Deque(){
 
 template<typename T>
 Deque<T>::Deque(T val):LinkedList<T>(val){
-	//Used the LinkedList constructor to initialized the 
-	//head node and tail node
-	
+	deque_len=1;
 }
-
 template<typename T>
 bool Deque<T>::isEmpty(){
         return LinkedList<T>::head == nullptr;
@@ -105,7 +105,7 @@ bool Deque<T>::isEmpty(){
 
 template<typename T>
 int Deque<T>::size(){
-	int length{0};
+	/*int length{0};
 	if(isEmpty()){return length;}
 
 	Node<T>* tmp= LinkedList<T>::head;
@@ -114,6 +114,8 @@ int Deque<T>::size(){
 		++length;
 	}
 	return length;
+	*/
+	return deque_len;
 }
 
 template<typename T>
@@ -126,6 +128,7 @@ void Deque<T>::addFirst(T const& val){
 		LinkedList<T>::tail = new_head;
 	}
 	LinkedList<T>::head = new_head;
+	deque_len+=1;
 }
 
 template<typename T>
@@ -137,7 +140,9 @@ void Deque<T>::addLast(T const& val){
 	}else{
 		LinkedList<T>::head= new_tail;
 	}
-		LinkedList<T>::tail = new_tail;
+	LinkedList<T>::tail = new_tail;
+	++deque_len;
+
 }
 
 template<typename T>
@@ -149,6 +154,7 @@ T Deque<T>::removeFirst(){
 	Node<T>* old_head= LinkedList<T>::head;
 	LinkedList<T>::head= LinkedList<T>::head->next;
 	delete old_head;
+	--deque_len;
 	return first_item;
 }
 
@@ -167,6 +173,7 @@ T Deque<T>::removeLast(){
 	LinkedList<T>::tail = pointer;
 	if (LinkedList<T>::tail==nullptr){LinkedList<T>::head=nullptr;}
 	delete old_tail;
+	--deque_len;
 	return last_item;
 }
 
@@ -239,6 +246,8 @@ const char* IllegalArgumentException::what() const throw(){
 template<typename T>
 RandomizedQueue<T>:: RandomizedQueue(){
      arr=nullptr;
+     RQ_len=0;
+     AV_len=0;
 
 }
 
@@ -253,11 +262,137 @@ RandomizedQueue<T>:: RandomizedQueue(T val){
 	 
      arr=std::make_unique<T[]>(2);
 	 arr[0]=val;
+     RQ_len=1;
+     AV_len=2;
 
 }
 
 template<typename T>
 int RandomizedQueue<T>::size(){
+     return RQ_len;
+	
+}
+
+template<typename T>
+void RandomizedQueue<T>::enqueue(T item){
+	if (arr==nullptr){
+		arr=std::make_unique<T[]>(2);
+		AV_len=2;
+	}
+	//int arr_len= sizeof(&arr)/ sizeof(arr[0]);
+	//std::cout<<"arr size: "<<sizeof(arr)<<std::endl;
+	//std::cout<<"arr[0] size: "<< sizeof(arr[0])<<std::endl;
+	//std::cout<<"The curent array size is: "<<AV_len<<std::endl;
+	//std::cout<<"The current RQ_len is: "<<RQ_len<<std::endl;
+	if (RQ_len == AV_len) {
+	  std::cout<<"Now need to double the array size"<<std::endl;
+	  AV_len= 2*RQ_len;
+	  auto temp= std::make_unique<T[]>(AV_len);
+	  std::cout<<"temp size: "<<sizeof(&temp)<<std::endl;
+	  for(int i=0; i< RQ_len; ++i){
+		  temp[i]= arr[i];
+	  }
+          arr=std::move(temp);
+	}
+	arr[RQ_len]=item;
+	++RQ_len;
 
 	
+}
+
+template<typename T>
+T RandomizedQueue<T>::dequeue(){
+	if(arr==nullptr || RQ_len==0){
+		throw NoSuchElementException();
+	}
+	std::random_device rd;
+	std::mt19937 gen(rd());
+	std::uniform_int_distribution<> dis(0,RQ_len-1);
+	int selected_index = dis(gen);
+	T selected_item = arr[selected_index];
+	std::swap(arr[selected_index], arr[RQ_len-1]);
+	arr[RQ_len-1]= T{};
+	RQ_len-=1;
+	return selected_item;
+
+	
+
+}
+
+template<typename T>
+T RandomizedQueue<T>::sample(){
+	if(arr==nullptr || RQ_len==0){
+		throw NoSuchElementException();
+	}
+	std::random_device rd;
+	std::mt19937 gen(rd());
+	std::uniform_int_distribution<> dis(0, RQ_len-1);
+	int selected_index = dis(gen);
+	T selected_item = arr[selected_index];
+	return selected_item;
+}
+
+template<typename T>
+RandomizedQueueIterator<T> RandomizedQueue<T>::iterator(){
+	RandomizedQueueIterator<T> iter(*this);
+	
+	return iter;
+
+}
+
+template<typename T>
+class RandomizedQueueIterator: public std::iterator< std::forward_iterator_tag, T>
+{
+	public: 
+		RandomizedQueueIterator();
+		RandomizedQueueIterator(RandomizedQueue<T>&);
+		~RandomizedQueueIterator();
+		T operator*();
+		RandomizedQueueIterator& operator++();
+		RandomizedQueueIterator& operator++(int);
+		bool has_next();
+	private:
+		std::vector<int> order_arr;
+		RandomizedQueue<T>& RQ_ref;
+		std::vector<int>::iterator pos;
+};
+
+template<typename T>
+RandomizedQueueIterator<T>::RandomizedQueueIterator(){
+	
+}
+
+template<typename T>
+RandomizedQueueIterator<T>::RandomizedQueueIterator(RandomizedQueue<T>& RQ_ins)
+: RQ_ref(RQ_ins), pos(nullptr),order_arr(){
+	int RQ_len= RQ_ref.RQ_len;
+	if(RQ_len ==0){
+		return;
+		
+	}else{
+               
+		std::random_device rd;
+		std::mt19937 gen(rd());
+		for (int i=0; i< RQ_len; ++i){
+			order_arr.push_back(i);
+	        	std::uniform_int_distribution<> dis(0, i);
+			int selected_index= dis(gen);
+			std::swap(order_arr[selected_index], order_arr[i]);
+		}
+	
+	}
+	pos= order_arr.begin();
+
+}
+
+template<typename T>
+RandomizedQueueIterator<T>::~RandomizedQueueIterator(){
+}
+
+template<typename T>
+T RandomizedQueueIterator<T>::operator*(){
+	if (pos==order_arr.end()){return 0;}
+	int index= *pos;
+
+	return RQ_ref.arr[index];	
 }

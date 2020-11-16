@@ -4,6 +4,8 @@
 #include <gtest/gtest.h>
 #include <vector>
 #include <exception>
+#include <algorithm>
+
 
 int main(int ac, char* av[]){
 
@@ -150,8 +152,101 @@ TEST (DequeTest, checkIterator){
 
 TEST (RandomizedQueueTest, checkConstructor){
 	RandomizedQueue<int> RQ_ins{};
-	EXPECT_EQ(nullptr, RQ_ins.arr);
+	//EXPECT_EQ(nullptr, RQ_ins.arr);
 	RandomizedQueue<int> RQ_ins_2(10);
-	EXPECT_EQ(10, RQ_ins.arr[0]);
+	//EXPECT_EQ(10, RQ_ins.arr[0]);
+	//EXPECT_EQ(0, RQ_ins.arr[1]);
+	//EXPECT_EQ(NULL, RQ_ins.arr[1]);
+
+}
+
+TEST (RandomizeQueueTest, checkSize){
+	RandomizedQueue<int> RQ_ins{};
+	EXPECT_EQ(0, RQ_ins.size());
+	RandomizedQueue<int> RQ_ins_2(10);
+	EXPECT_EQ(1, RQ_ins_2.size());
+}
+
+TEST (RandomizedQueueTest, checkEnqueue){
+	RandomizedQueue<int> RQ_ins{};
+	RQ_ins.enqueue(10);
+	EXPECT_EQ(1, RQ_ins.size() );
+	RQ_ins.enqueue(20);
+	EXPECT_EQ(2, RQ_ins.size());
+	std::cout<<"Now need to double the stack"<<std::endl;
+	RQ_ins.enqueue(30);
+	EXPECT_EQ(3, RQ_ins.size());
+	RQ_ins.enqueue(40);
+	EXPECT_EQ(4, RQ_ins.size());
+	RQ_ins.enqueue(50);
+	EXPECT_EQ(5, RQ_ins.size());
+
+	RQ_ins.enqueue(60);
+	EXPECT_EQ(6, RQ_ins.size());
+
+	RQ_ins.enqueue(70);
+	EXPECT_EQ(7, RQ_ins.size());
+
+	RQ_ins.enqueue(80);
+	EXPECT_EQ(8, RQ_ins.size());
+
+}
+
+TEST(RandomizedQueueTest, checkDequeue){
+	RandomizedQueue<int> RQ_ins{};
+	EXPECT_THROW( RQ_ins.dequeue(),NoSuchElementException);
+	RQ_ins.enqueue(10);
+	auto temp = RQ_ins.dequeue();
+	EXPECT_EQ(10, temp);
+	EXPECT_EQ(0, RQ_ins.size());
+	EXPECT_THROW( RQ_ins.dequeue(),NoSuchElementException);
+	RQ_ins.enqueue(20);
+	auto temp_2 = RQ_ins.dequeue();
+	EXPECT_EQ(20, temp_2);
+	EXPECT_EQ(0, RQ_ins.size());
+	EXPECT_THROW( RQ_ins.dequeue(),NoSuchElementException);
+        
+	std::vector<int> test_vec{1,2,3,4,5,6,7,8,9,10};
+	for(auto item : test_vec){
+		RQ_ins.enqueue(item);
+	}
+	std::vector<int> deque_vec{};
+	std::cout << "Deque order: ";
+	for(auto i=0;i<10;++i){
+	        auto temp = RQ_ins.dequeue();
+		deque_vec.push_back(temp);
+		std::cout<<temp<<" ";
+	}
+	std::cout<<std::endl;
+
+	EXPECT_NE(test_vec, deque_vec);
+	std::sort(deque_vec.begin(), deque_vec.end());
+	EXPECT_EQ(test_vec, deque_vec);
+
+
+}
+
+TEST(RandomizedQueueTest, checkSample){
+	RandomizedQueue<int> RQ_ins{};
+	EXPECT_THROW(RQ_ins.sample(), NoSuchElementException);
+	RQ_ins.enqueue(10);
+	auto sample_item = RQ_ins.sample();
+	EXPECT_EQ(10, sample_item);
+	RQ_ins.dequeue();
+	EXPECT_THROW(RQ_ins.sample(),NoSuchElementException);
+	RQ_ins.enqueue(20);
+	auto sample_item_2 = RQ_ins.sample();
+	EXPECT_EQ(20, sample_item_2);
+	RQ_ins.enqueue(30);
+	
+}
+
+TEST(RandomizedQueueTest, checkIterator){
+	RandomizedQueue<int> RQ_ins{};
+	auto iter_1 = RQ_ins.iterator();
+	EXPECT_EQ(0, *iter_1);
+	RandomizedQueue<int> RQ_ins_2(10);
+	auto iter_2 = RQ_ins_2.iterator();
+	EXPECT_EQ(10, *iter_2);
 
 }
