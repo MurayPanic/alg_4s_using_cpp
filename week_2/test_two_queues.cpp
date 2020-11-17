@@ -244,9 +244,30 @@ TEST(RandomizedQueueTest, checkSample){
 TEST(RandomizedQueueTest, checkIterator){
 	RandomizedQueue<int> RQ_ins{};
 	auto iter_1 = RQ_ins.iterator();
-	EXPECT_EQ(0, *iter_1);
+	EXPECT_THROW(*iter_1, NoSuchElementException);
 	RandomizedQueue<int> RQ_ins_2(10);
 	auto iter_2 = RQ_ins_2.iterator();
 	EXPECT_EQ(10, *iter_2);
+	RQ_ins.enqueue(20);
+	RQ_ins.enqueue(30);
+	RQ_ins.enqueue(40);
+	RQ_ins.enqueue(50);
+	RQ_ins.enqueue(60);
+	RQ_ins.enqueue(70);
+	auto iter_3= RQ_ins.iterator();
+	EXPECT_THROW(*iter_1, NoSuchElementException);
+	std::vector<int> test_vec{20, 30, 40, 50, 60, 70};
+	std::vector<int> result_vec{};
+	std::cout<<"The now print the item randomly: ";
+	while(iter_3.has_next()){
+		auto item = *iter_3;
+		result_vec.push_back(item);
+		++iter_3;
+		std::cout<< item <<" ";
+	}
+	std::cout<<std::endl;
+	EXPECT_NE(test_vec, result_vec);
+	std::sort(result_vec.begin(), result_vec.end());
+	EXPECT_EQ(test_vec, result_vec);
 
 }

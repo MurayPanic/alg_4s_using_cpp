@@ -348,13 +348,15 @@ class RandomizedQueueIterator: public std::iterator< std::forward_iterator_tag, 
 		RandomizedQueueIterator(RandomizedQueue<T>&);
 		~RandomizedQueueIterator();
 		T operator*();
-		RandomizedQueueIterator& operator++();
-		RandomizedQueueIterator& operator++(int);
+		RandomizedQueueIterator<T>& operator=(const RandomizedQueueIterator<T>&);
+		RandomizedQueueIterator<T>& operator++();
+		RandomizedQueueIterator<T>& operator++(int);
 		bool has_next();
 	private:
 		std::vector<int> order_arr;
 		RandomizedQueue<T>& RQ_ref;
 		std::vector<int>::iterator pos;
+		
 };
 
 template<typename T>
@@ -385,14 +387,55 @@ RandomizedQueueIterator<T>::RandomizedQueueIterator(RandomizedQueue<T>& RQ_ins)
 
 }
 
+
 template<typename T>
 RandomizedQueueIterator<T>::~RandomizedQueueIterator(){
 }
 
 template<typename T>
 T RandomizedQueueIterator<T>::operator*(){
-	if (pos==order_arr.end()){return 0;}
+	if (pos==order_arr.end()){
+		throw NoSuchElementException();}
 	int index= *pos;
 
 	return RQ_ref.arr[index];	
+}
+
+template<typename T>
+RandomizedQueueIterator<T>& RandomizedQueueIterator<T>::operator=(const RandomizedQueueIterator<T>& RQI_ins){
+	   order_arr=RQI_ins.order_arr;
+	   pos=RQI_ins.pos;
+	   return *this;
+	
+}
+
+
+
+template<typename T>
+RandomizedQueueIterator<T>& RandomizedQueueIterator<T>::operator++(){
+	
+	++pos;
+	return *this;
+
+}
+
+template<typename T>
+RandomizedQueueIterator<T>& RandomizedQueueIterator<T>::operator++(int){
+	if(pos!=order_arr.end()){
+		RandomizedQueueIterator<T> temp = new RandomizedQueueIterator<T> (*this);
+		++pos;
+		return *temp;
+	}else{
+		throw NoSuchElementException();
+	}
+
+}
+
+template<typename T>
+bool RandomizedQueueIterator<T>::has_next(){
+	if (pos != order_arr.end()){
+		return true;
+	}else{
+		return false;
+	}
 }
