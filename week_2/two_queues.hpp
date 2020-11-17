@@ -285,10 +285,10 @@ void RandomizedQueue<T>::enqueue(T item){
 	//std::cout<<"The curent array size is: "<<AV_len<<std::endl;
 	//std::cout<<"The current RQ_len is: "<<RQ_len<<std::endl;
 	if (RQ_len == AV_len) {
-	  std::cout<<"Now need to double the array size"<<std::endl;
+	  //std::cout<<"Now need to double the array size"<<std::endl;
 	  AV_len= 2*RQ_len;
 	  auto temp= std::make_unique<T[]>(AV_len);
-	  std::cout<<"temp size: "<<sizeof(&temp)<<std::endl;
+	  //std::cout<<"temp size: "<<sizeof(&temp)<<std::endl;
 	  for(int i=0; i< RQ_len; ++i){
 		  temp[i]= arr[i];
 	  }

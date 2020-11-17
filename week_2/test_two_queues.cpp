@@ -266,6 +266,17 @@ TEST(RandomizedQueueTest, checkIterator){
 		std::cout<< item <<" ";
 	}
 	std::cout<<std::endl;
+	auto iter_4 = RQ_ins.iterator();
+	std::vector<int> result_vec_2{};
+	std::cout<<"The now print the item with another iterator randomly: ";
+	while(iter_4.has_next()){
+		auto item = *iter_4;
+		result_vec_2.push_back(item);
+		++iter_4;
+		std::cout<< item <<" ";
+	}
+	std::cout<<std::endl;
+	EXPECT_NE(result_vec, result_vec_2);
 	EXPECT_NE(test_vec, result_vec);
 	std::sort(result_vec.begin(), result_vec.end());
 	EXPECT_EQ(test_vec, result_vec);
