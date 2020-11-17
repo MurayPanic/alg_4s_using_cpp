@@ -11,7 +11,8 @@ class Node{
 		Node(const Node<T> &);
 		~Node();
 		T data;
-		std::unique_ptr < Node<T> > next;
+		std::shared_ptr < Node<T> > next;
+		std::weak_ptr <Node<T> > prev;
 
 };
 
@@ -22,16 +23,17 @@ class LinkedList{
 		LinkedList(T);
 		
 		~LinkedList();
-		std::unique_ptr < Node<T> > head;
-		std::unique_ptr < Node<T> > tail;
+		std::shared_ptr < Node<T> > head;
+		std::shared_ptr < Node<T> > tail;
 };
 
 #endif
 
 template <class T>
-Node<T>::Node(){
-	data=T{};
-	next=nullptr;
+Node<T>::Node(): data(),next(nullptr), prev(std::weak_ptr<Node<T>>()){
+	//data=T{};
+	//next=nullptr;
+	//prev=nullptr;
 };
 
 template <class T>
@@ -39,6 +41,8 @@ Node<T>::Node(const Node<T> & node_obj){
 	data=node_obj.data;
 	
 	next=node_obj.next;
+	prev= node_obj.prev;
+
 };
 
 template <class T>
@@ -56,9 +60,9 @@ Node<T>::~Node(){
 
 template <class T>
 LinkedList<T>::LinkedList(){
-	auto temp = std::make_unique<Node<T>>();
+	auto temp = std::make_shared<Node<T>>();
 	head = std::move(temp);
-	//tail= head;
+	tail= std::move(temp);
 };
 
 template <class T>
@@ -71,9 +75,9 @@ LinkedList<T>::~LinkedList(){
 
 template <class T>
 LinkedList<T>::LinkedList(T val){
-	auto temp = std::make_unique<Node<T>>(val);
+	auto temp = std::make_shared<Node<T>>(val);
 	head= std::move(temp);
-	//tail= head;
+	tail= std::move(temp);
 };
 
 
