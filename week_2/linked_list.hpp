@@ -11,6 +11,7 @@ class Node{
 		~Node();
 		T data;
 		Node<T>* next;
+		Node<T>* prev;
 
 };
 
@@ -30,6 +31,7 @@ template <class T>
 Node<T>::Node(){
 	data=T{};
 	next=nullptr;
+	prev=nullptr;
 };
 
 
@@ -38,7 +40,7 @@ Node<T>::Node(T val){
 	data=val;
 	
 	next=nullptr;
-	
+	prev=nullptr;
 
 }
 

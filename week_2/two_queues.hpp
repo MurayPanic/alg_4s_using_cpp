@@ -4,7 +4,7 @@
 #include <random>
 #include <algorithm>
 #include <climits>
-#include "linked_list_sp.hpp"
+#include "linked_list.hpp"
 #ifndef TWO_QUEUES_HPP
 #define TWO_QUEUES_HPP
 
