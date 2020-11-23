@@ -25,6 +25,8 @@ class LinkedList{
 		Node<T>* tail;
 };
 
+template <class T> class DoublyLinkedList;
+
 #endif
 
 template <class T>
@@ -62,3 +64,27 @@ LinkedList<T>::LinkedList(T val){
 	head=new  Node<T> (val);
 	tail= head;
 };
+
+//Doubly Linked list Definition
+
+template <class T>
+class DoublyLinkedList{
+	public:
+		DoublyLinkedList();
+		DoublyLinkedList(T);
+		~DoublyLinkedList();
+		Node<T>* head;
+		Node<T>* tail;
+
+};
+
+template <class T>
+DoublyLinkedList<T>::DoublyLinkedList(): head(nullptr),tail(nullptr) {};
+
+template<class T>
+DoublyLinkedList<T>::DoublyLinkedList(T val): head(new Node<T>(val)){
+	tail= head;
+};
+
+template<class T>
+DoublyLinkedList<T>::~DoublyLinkedList(){}

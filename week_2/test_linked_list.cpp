@@ -100,7 +100,16 @@ TEST(LinkedListTest,tailNodeTest){
 }
 
 
+TEST(DoublyLinkedListTest, checkConstructer){
+	DoublyLinkedList<int> int_DLL{};
+	DoublyLinkedList<std::vector<int> > vec_DLL{};
+	DoublyLinkedList<int> int_DLL_2(10);
+	std::vector<int> vec_int{};
+	vec_int.push_back(20);
+	vec_int.push_back(30);
+	DoublyLinkedList<std::vector<int> > vec_DLL_2(vec_int);
 
+}
 
 int main(int ac, char* av[]){
 

@@ -30,7 +30,7 @@ class DequeIterator: public std::iterator< std::forward_iterator_tag, T >
 };
 
 template <typename T> 
-class Deque: public LinkedList<T>{
+class Deque: public DoublyLinkedList<T>{
 	public:
 		Deque();
 		Deque(T);
@@ -95,12 +95,12 @@ Deque<T>::~Deque(){
 }
 
 template<typename T>
-Deque<T>::Deque(T val):LinkedList<T>(val){
+Deque<T>::Deque(T val):DoublyLinkedList<T>(val){
 	deque_len=1;
 }
 template<typename T>
 bool Deque<T>::isEmpty(){
-        return LinkedList<T>::head == nullptr;
+        return DoublyLinkedList<T>::head == nullptr;
 }
 
 template<typename T>
@@ -123,11 +123,12 @@ void Deque<T>::addFirst(T const& val){
 	Node<T>* new_head= new Node<T>(val);
 
 	if(!isEmpty()){
-		new_head->next=LinkedList<T>::head;
+		new_head->next=DoublyLinkedList<T>::head;
+		DoublyLinkedList<T>::head->prev=new_head;
 	}else{
-		LinkedList<T>::tail = new_head;
+		DoublyLinkedList<T>::tail = new_head;
 	}
-	LinkedList<T>::head = new_head;
+	DoublyLinkedList<T>::head = new_head;
 	deque_len+=1;
 }
 
@@ -136,11 +137,12 @@ void Deque<T>::addLast(T const& val){
 	Node<T>* new_tail= new Node<T>(val);
 	
 	if(!isEmpty()){
-		LinkedList<T>::tail->next =  new_tail;
+		DoublyLinkedList<T>::tail->next =  new_tail;
+		new_tail->prev= DoublyLinkedList<T>::tail;
 	}else{
-		LinkedList<T>::head= new_tail;
+		DoublyLinkedList<T>::head= new_tail;
 	}
-	LinkedList<T>::tail = new_tail;
+	DoublyLinkedList<T>::tail = new_tail;
 	++deque_len;
 
 }
@@ -150,9 +152,12 @@ T Deque<T>::removeFirst(){
 	if(isEmpty()){
 		throw NoSuchElementException();
 	}
-	T first_item = LinkedList<T>::head->data;
-	Node<T>* old_head= LinkedList<T>::head;
-	LinkedList<T>::head= LinkedList<T>::head->next;
+	T first_item = DoublyLinkedList<T>::head->data;
+	Node<T>* old_head= DoublyLinkedList<T>::head;
+	DoublyLinkedList<T>::head= DoublyLinkedList<T>::head->next;
+	if(!isEmpty()){
+		DoublyLinkedList<T>::head->prev=nullptr;
+	}
 	delete old_head;
 	--deque_len;
 	return first_item;
@@ -164,14 +169,11 @@ T Deque<T>::removeLast(){
 	if(isEmpty()){
 		throw NoSuchElementException();
 	}
-	T last_item = LinkedList<T>::tail->data;
-	Node<T>* old_tail = LinkedList<T>::tail;
-	Node<T>* pointer =  LinkedList<T>::head;
-	while(pointer!=nullptr && pointer->next != old_tail){
-		pointer=pointer->next;
-	}
-	LinkedList<T>::tail = pointer;
-	if (LinkedList<T>::tail==nullptr){LinkedList<T>::head=nullptr;}
+	T last_item = DoublyLinkedList<T>::tail->data;
+	Node<T>* old_tail = DoublyLinkedList<T>::tail;
+	DoublyLinkedList<T>::tail = DoublyLinkedList<T>::tail->prev;
+	if (DoublyLinkedList<T>::tail==nullptr){DoublyLinkedList<T>::head=nullptr;}
+	else{DoublyLinkedList<T>::tail->next=nullptr;}
 	delete old_tail;
 	--deque_len;
 	return last_item;
@@ -179,7 +181,7 @@ T Deque<T>::removeLast(){
 
 template<typename T>
 DequeIterator<T> Deque<T>::iterator(){
-	DequeIterator<T> iter_ins( LinkedList<T>::head);
+	DequeIterator<T> iter_ins( DoublyLinkedList<T>::head);
 	return iter_ins;
 }
 
