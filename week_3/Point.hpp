@@ -77,7 +77,7 @@ double Point::slopeTo(const Point& that_point_ins){
 
 //Compare opeator
 bool Point::operator < (const Point& that_point_ins) const {
-        if(y< that_point_ins.y ||(y==that_point_ins.y && x<that_point_ins.x)){
+        if(y< that_point_ins.y ||((y==that_point_ins.y) && (x<that_point_ins.x) )){
             return true;
         }else{
             return false;

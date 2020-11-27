@@ -16,7 +16,8 @@ class LineSegment {
 		LineSegment();
 		LineSegment(const Point& , const Point&);
 		~LineSegment();
-		std::string toString();	
+		std::string toString() const;	
+		bool operator == (const LineSegment&) const;
 		const Point* p;
 		const Point* q;
 
@@ -35,10 +36,17 @@ LineSegment::LineSegment(const Point& point_ins_1, const Point& point_ins_2)
 LineSegment::~LineSegment(){};
 
 //return a string that represent the line segment
-std::string LineSegment::toString(){
+std::string LineSegment::toString() const{
 	std::string result;
 	if(p&&q){
 		result = p->toString() + "->" + q->toString();
 	}
 	return result;
+}
+
+//equal operator
+bool LineSegment::operator == (const LineSegment& that_LS_ins)const{
+	bool criti_match = ( *(this->p) == *(that_LS_ins.p)) && (*(this->q) == *(that_LS_ins.q));
+	bool criti_miss_match = (*(this->p) == (*that_LS_ins.q)) && (*(this->q) == *(that_LS_ins.p));
+	return criti_match || criti_miss_match;
 }

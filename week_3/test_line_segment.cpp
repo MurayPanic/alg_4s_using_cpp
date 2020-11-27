@@ -19,9 +19,16 @@ TEST(LineSegmentTest, constructor){
 TEST(LineSegmentTest, toString){
 	Point p_ins_1(10,20);
 	Point p_ins_2(30,40);
+	Point p_ins_3(50,60);
 	LineSegment LS_ins(p_ins_1, p_ins_2);
 	GTEST_COUT<<"The line segment is" <<LS_ins.toString()<<std::endl;
 	EXPECT_EQ("(10,20)->(30,40)",LS_ins.toString());
+	LineSegment LS_ins_2(p_ins_2, p_ins_1);
+	LineSegment LS_ins_3(p_ins_1, p_ins_3);
+	EXPECT_TRUE(LS_ins==LS_ins_2);
+	EXPECT_TRUE(LS_ins==LS_ins);
+	EXPECT_FALSE(LS_ins_2==LS_ins);
+
 	
 }
 
