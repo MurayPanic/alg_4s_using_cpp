@@ -3,7 +3,6 @@
 #include <algorithm>
 #include <unordered_set>
 #include <string>
-#include <functional>
 #include "LineSegment.hpp"
 
 #ifndef BRUTECOLLINEARPOINTS_HPP
@@ -21,7 +20,6 @@ class Hash_LineSegment{
 	std::size_t operator()(const LineSegment& LS_ins)const{
 		std::string LS_str= LS_ins.toString();
         std::hash<std::string> str_hasher;
-		std::cout<< "The hasher is called: "<<LS_str<< " : "<< str_hasher(LS_str)<<std::endl;
 		return str_hasher(LS_str);
 	}
 };
@@ -38,6 +36,8 @@ class BruteCollinearPoints{
 		std::vector<LineSegment> segments();
 	private:
 		std::unordered_set<LineSegment, Hash_LineSegment> set_lineSeg;
+		bool collinearOrNot (const Point*[]);
+		void removeDuplicateLines(LineSegment&);
 };
 
 //Class constructor
@@ -48,11 +48,13 @@ BruteCollinearPoints::BruteCollinearPoints(){
 BruteCollinearPoints::BruteCollinearPoints(std::vector<Point>& vec_points){
 	
 	std::sort(vec_points.begin(), vec_points.end());
+	/*
 	std::cout<< "The point vector: ";
 	for (auto item :vec_points){
 		std::cout<<item.toString();
 	}
 	std::cout<< std::endl;
+	*/
 	std::vector<int> bitmap (vec_points.size(),0);
 	for (int i =0; i<4;++i){
 		bitmap[i]=1;
@@ -60,7 +62,7 @@ BruteCollinearPoints::BruteCollinearPoints(std::vector<Point>& vec_points){
 
 	do{
 		int j=0;
-		Point* four_point_arr[4];
+		const Point* four_point_arr[4];
 		for(int i=0; i<vec_points.size();++i ){
 			//Pick four points from the list
 			
@@ -71,46 +73,54 @@ BruteCollinearPoints::BruteCollinearPoints(std::vector<Point>& vec_points){
 
 			
 		}
-		//Check slope
+
+
+		if(collinearOrNot(four_point_arr)){
+
+			LineSegment tmp_seg(*four_point_arr[0], *four_point_arr[3]);
+	                //removeDuplicateLines(tmp_seg);
+			set_lineSeg.insert(tmp_seg);
+		
+		}
+
+
+
+	}while( std::ranges::prev_permutation(bitmap).found );
+	
+
+	//Delete duplicate line segments
+	
+};
+
+//Helper function that check collinear
+bool BruteCollinearPoints::collinearOrNot(const Point*  four_point_arr[4]){
+	
 		double first_slope= four_point_arr[0]->slopeTo(*four_point_arr[1]);
 		double second_slope= four_point_arr[1]->slopeTo(*four_point_arr[2]);
 		double third_slope= four_point_arr[2]->slopeTo(*four_point_arr[3]);
-
 		double diff_1st_and_2nd = std::abs(first_slope-second_slope);
 		double diff_2nd_and_3rd = std::abs(second_slope- third_slope);
 
 
 
 		if((diff_1st_and_2nd < eps) && (diff_2nd_and_3rd < eps)){
-			LineSegment tmp_seg(*four_point_arr[0], *four_point_arr[3]);
-			
-			std::cout<< "One line segment find: "<<tmp_seg.toString()<<std::endl;
-			std::cout<<"The complete line is: ";
-			for(auto item :four_point_arr){
-				std::cout<< item->toString()<<"->";
-			}
-			std::cout<<std::endl;
+			return true;
+		}else{
+			return false;
+		}
 
-			std::cout<<"Before insertion: ";
-			for(auto item : set_lineSeg){
-				std::cout<< item.toString();
-			}
-			std::cout<<std::endl;
-			
+}
 
-			set_lineSeg.insert(tmp_seg);
-			std::cout<<"After insertion: ";
-			for(auto item : set_lineSeg){
-				std::cout<< item.toString();
-			}
-			std::cout<<std::endl;
-		} 
+//Helper function that remove duplicate line segmentsi
+//Not required by the assignment. Therefore abandon
+void BruteCollinearPoints:: removeDuplicateLines(LineSegment& tmp_seg){
+	for(auto iter= set_lineSeg.begin(); iter!=set_lineSeg.end(); ++iter){
+		const Point*  four_point_arr[4]{tmp_seg.p,tmp_seg.q, iter->p, iter->q};
+	}
+   	
+}
 
 
-
-	}while( std::ranges::prev_permutation(bitmap).found );
-
-};
 
 //Class deconstructor
 BruteCollinearPoints::~BruteCollinearPoints(){};
@@ -119,23 +129,21 @@ BruteCollinearPoints::~BruteCollinearPoints(){};
 std::vector<LineSegment> BruteCollinearPoints::segments(){
     
 	 
-     
+     	/*
 	 std::cout<< "Before assign: ";
 	 for (auto item : set_lineSeg){
 		 std::cout<< item.toString(); 
 	 }
 	 std::cout<<std::endl;
-
+	*/
 	 std::vector<LineSegment> vec_lineSeg(set_lineSeg.begin(), set_lineSeg.end());
-     //std::vector<LineSegment> vec_lineSeg;
-	 //std::copy(set_lineSeg.begin(),set_lineSeg.end())
-	 //vec_lineSeg.assign(set_lineSeg.begin(), set_lineSeg.end());
+	 /*
 	 std::cout<< "Before return: ";
 	 for (auto item : vec_lineSeg){
 		 std::cout<< item.toString(); 
 	 }
 	 std::cout<<std::endl;
-
+	*/
 
 	return vec_lineSeg; 
 

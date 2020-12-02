@@ -1,5 +1,6 @@
 #include <iostream>
 #include <climits>
+#include <cfloat>
 #include <string>
 #ifndef POINT_HPP
 #define POINT_HPP
@@ -18,7 +19,7 @@ class Point{
 	std::string toString() const;
 
         //int compareTo(Point&);
-        double slopeTo(const Point&);
+        double slopeTo(const Point&) const;
         bool operator < (const Point&) const; 
 	bool operator == (const Point&) const;
 	bool slopeOrder(const Point&, const Point&);
@@ -60,10 +61,10 @@ int  Point::compareTo(Point& point_ins){
 
 
 //the slope between this point and that point
-double Point::slopeTo(const Point& that_point_ins){
+double Point::slopeTo(const Point& that_point_ins) const {
     double result{0.0};
-    int denominator =  that_point_ins.x-x;
-    int fraction = that_point_ins.y-y;
+    double denominator =  that_point_ins.x-x;
+    double fraction = that_point_ins.y-y;
     if(denominator==0){
         if(fraction==0){result = -DBL_MAX;}
 	else{result = DBL_MAX;}

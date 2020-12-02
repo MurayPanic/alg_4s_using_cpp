@@ -53,6 +53,8 @@
         "cstring": "cpp",
         "set": "cpp",
         "iomanip": "cpp",
-        "thread": "cpp"
+        "thread": "cpp",
+        "unordered_set": "cpp",
+        "compare": "cpp"
     }
 }

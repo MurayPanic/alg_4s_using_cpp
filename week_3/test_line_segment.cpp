@@ -27,7 +27,7 @@ TEST(LineSegmentTest, toString){
 	LineSegment LS_ins_3(p_ins_1, p_ins_3);
 	EXPECT_TRUE(LS_ins==LS_ins_2);
 	EXPECT_TRUE(LS_ins==LS_ins);
-	EXPECT_FALSE(LS_ins_2==LS_ins);
+	EXPECT_TRUE(LS_ins_2==LS_ins);
 
 	
 }
