@@ -1,6 +1,8 @@
 #include <iostream>
 #include "Point.hpp"
 
+#pragma once
+
 #ifndef LINESEGMENT_HPP
 #define LINESEGMENT_HPP
 
@@ -31,6 +33,8 @@ LineSegment::LineSegment(): p(nullptr),q(nullptr){};
 LineSegment::LineSegment(const Point& point_ins_1, const Point& point_ins_2)
 	:p( &point_ins_1),q( &point_ins_2){
 };
+
+
 
 //deconstructer
 LineSegment::~LineSegment(){};

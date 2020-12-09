@@ -9,20 +9,9 @@
 #define BRUTECOLLINEARPOINTS_HPP
 //class declaration
 class BruteCollinearPoints;
-
 #endif
 
-const double eps = 1e-20;
 
-//hash function for unorderedset
-class Hash_LineSegment{
-	public:
-	std::size_t operator()(const LineSegment& LS_ins)const{
-		std::string LS_str= LS_ins.toString();
-        std::hash<std::string> str_hasher;
-		return str_hasher(LS_str);
-	}
-};
 
 
 
@@ -32,12 +21,24 @@ class BruteCollinearPoints{
 		BruteCollinearPoints();
 		BruteCollinearPoints( std::vector<Point>&);
 		~BruteCollinearPoints();
-		int numberofSegments();
+		int numberOfSegments();
 		std::vector<LineSegment> segments();
 	private:
+
+		//hash function for unorderedset
+		class Hash_LineSegment{
+			public:
+				std::size_t operator()(const LineSegment& LS_ins)const{
+				std::string LS_str= LS_ins.toString();
+        			std::hash<std::string> str_hasher;
+				return str_hasher(LS_str);
+				}
+			};
 		std::unordered_set<LineSegment, Hash_LineSegment> set_lineSeg;
 		bool collinearOrNot (const Point*[]);
 		void removeDuplicateLines(LineSegment&);
+		
+		const double eps = 1e-20;
 };
 
 //Class constructor
@@ -151,7 +152,7 @@ std::vector<LineSegment> BruteCollinearPoints::segments(){
 }
 
 //Return the number of line segment:
-int BruteCollinearPoints::numberofSegments(){
+int BruteCollinearPoints::numberOfSegments(){
 	int result = set_lineSeg.size();
 	return result;
 }
