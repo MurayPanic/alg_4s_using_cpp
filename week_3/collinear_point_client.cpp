@@ -1,10 +1,10 @@
 #include<iostream>
 #include "BruteCollinearPoints.hpp"
 #include "FastCollinearPoints.hpp"
+#include "draw.hpp"
 #include <filesystem>
 #include <fstream>
 #include <string>
-#include <opencv2/opencv.hpp>
 
 int main(int argc, char* argv[]){
 	std::cout<< "This program is to find out collinear points on a plane and draw it out"
@@ -56,12 +56,16 @@ int main(int argc, char* argv[]){
 	}
 
 	std::cout<<"Now visualize the point and line segments..."<<std::endl;
-	/*
-	cv::Mat BCP_img = cv::Mat::zeros(32768,32768,CV_8UC3);
-	cv::Mat BCP_result = cv::Mat::zeros(400,400, CV_8UC3);
-	cv::resize(BCP_img, BCP_result,cv::Size(),0.1,0.1);
-	cv::imshow("Line Segments with Brute force search", BCP_result);
-	cv::waitKey(0);
-	*/
+	for (auto& point_ins : vec_point){
+		draw(point_ins);
+	}
+
+	for (auto& LS_ins : vec_lineSeg_2 ){
+		draw(LS_ins);
+	}
+
+	show();
+
+
 	return 0;
 }
