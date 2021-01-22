@@ -43,7 +43,7 @@ clang++-10 PuzzleChecker.cpp -o PuzzleChecker --std=c++2a -lstdc++fs -lpthread
 To run the test, please provide the address for holding the test cases:
 
 ```bash
-.\PuzzleChecker .\8puzzle
+./PuzzleChecker ./8puzzle
 ```
 
 

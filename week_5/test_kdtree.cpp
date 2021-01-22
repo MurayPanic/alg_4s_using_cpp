@@ -176,6 +176,70 @@ TEST(KdTree_draw, case_3){
 	KT_ins.draw();
 }
 
+TEST(KdTree_draw, circle10){
+	KdTree KT_ins{};
+	
+	Point2D point_ins_1(0.206107, 0.095492);
+	Point2D point_ins_2(0.975528, 0.654508);
+	Point2D point_ins_3(0.024472, 0.345492);
+	Point2D point_ins_4(0.793893, 0.095492);
+	Point2D point_ins_5(0.793893, 0.904508);
+	Point2D point_ins_6(0.975528, 0.345492);
+	Point2D point_ins_7(0.206107, 0.904508);
+	Point2D point_ins_8(0.500000, 0.000000);
+	Point2D point_ins_9(0.024472, 0.654508);
+	Point2D point_ins_10(0.500000, 1.000000);
+
+	KT_ins.insert(point_ins_1);
+	KT_ins.insert(point_ins_2);
+	KT_ins.insert(point_ins_3);
+	KT_ins.insert(point_ins_4);
+	KT_ins.insert(point_ins_5);
+	KT_ins.insert(point_ins_6);
+	KT_ins.insert(point_ins_7);
+	KT_ins.insert(point_ins_8);
+	KT_ins.insert(point_ins_9);
+	KT_ins.insert(point_ins_10);
+
+	KT_ins.draw();
+
+}
+
+TEST(KdTree_nearest, circle10){
+	KdTree KT_ins{};
+	
+	Point2D point_ins_1(0.206107, 0.095492);
+	Point2D point_ins_2(0.975528, 0.654508);
+	Point2D point_ins_3(0.024472, 0.345492);
+	Point2D point_ins_4(0.793893, 0.095492);
+	Point2D point_ins_5(0.793893, 0.904508);
+	Point2D point_ins_6(0.975528, 0.345492);
+	Point2D point_ins_7(0.206107, 0.904508);
+	Point2D point_ins_8(0.500000, 0.000000);
+	Point2D point_ins_9(0.024472, 0.654508);
+	Point2D point_ins_10(0.500000, 1.000000);
+
+	KT_ins.insert(point_ins_1);
+	KT_ins.insert(point_ins_2);
+	KT_ins.insert(point_ins_3);
+	KT_ins.insert(point_ins_4);
+	KT_ins.insert(point_ins_5);
+	KT_ins.insert(point_ins_6);
+	KT_ins.insert(point_ins_7);
+	KT_ins.insert(point_ins_8);
+	KT_ins.insert(point_ins_9);
+	KT_ins.insert(point_ins_10);
+
+	Point2D test_point_p(0.81,0.3);
+	auto nearest_point =KT_ins.nearest(test_point_p);
+	GTEST_COUT<<"The result point:"<< nearest_point.toString()<<std::endl;
+	GTEST_COUT<<"The expect point:"<< point_ins_6.toString()<<std::endl;
+	EXPECT_TRUE(nearest_point==point_ins_6);
+	
+
+}
+
+
 int main(int argc, char* argv[]){
 	std::cout << "This script is to test the KTtree head file"
 		  << std::endl;

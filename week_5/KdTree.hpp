@@ -54,7 +54,7 @@ class KdTree{
 	private:
 		KdTreeNode* head;
 		void search_tree_node(RectHV&, std::vector<Point2D>&, KdTreeNode*);
-		void search_nearest_neighbor(Point2D&, Point2D, double&, KdTreeNode*);
+		void search_nearest_neighbor(Point2D&, Point2D&, double&, KdTreeNode*);
 
 
 };
@@ -351,7 +351,7 @@ void KdTree::search_tree_node(RectHV& target_rect,
 Point2D KdTree::nearest(Point2D point_ins){
 	Point2D nearest_point;
 	double shortest_dist(DBL_MAX);
-	KdTreeNode* cur_node_ptr;
+	KdTreeNode* cur_node_ptr = this->head;
 
 	search_nearest_neighbor(point_ins, nearest_point,shortest_dist,cur_node_ptr);
 
@@ -360,7 +360,7 @@ Point2D KdTree::nearest(Point2D point_ins){
 
 }
 
-void search_nearest_neighbor(
+void KdTree::search_nearest_neighbor(
 			     Point2D& target_point,
 			     Point2D& nearest_point,
 			     double&  shortest_dist,
@@ -368,23 +368,25 @@ void search_nearest_neighbor(
 	
 	if(cur_node_ptr){
 		//Decide whether to search that tree
-		if(cur_node_ptr->rect_data.distanceTo(target_point) > shortest_dist ){
-		return;
-
+		if(cur_node_ptr->rect_data.distanceTo(target_point) > shortest_dist ){	
+			return;
 		}else{
 
-		double&  tmp_dist = target_point.distanceTo(cur_node_ptr->point_data);
+		double  tmp_dist = target_point.distanceTo(cur_node_ptr->point_data);
 		if(tmp_dist< shortest_dist){
 			nearest_point = cur_node_ptr->point_data;
 			shortest_dist = tmp_dist;
+			
 		}
 
 		//Search left subtree
+
 		search_nearest_neighbor(target_point, nearest_point, shortest_dist,
 					cur_node_ptr->left_child);
 
 		//Search right subtree
-		search_nearest_neighbor(target_point, nearest_point, shortest_dist,  					    cur_node_ptr->right_child);
+		search_nearest_neighbor(target_point, nearest_point, shortest_dist, 
+				cur_node_ptr->right_child);
 
 		}
 
