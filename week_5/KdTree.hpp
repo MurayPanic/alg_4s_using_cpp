@@ -133,6 +133,7 @@ int KdTree::size(){
 }
 
 void KdTree::insert(Point2D point_ins){
+
 	KdTreeNode* cur_node_ptr = this->head;
 	KdTreeNode* prev_node_ptr = nullptr;	
 	bool left_right_marker=true; // true for left, false for right
@@ -219,6 +220,14 @@ void KdTree::insert(Point2D point_ins){
 	}
 	
 
+	//Debug output
+	/*
+	if(point_ins.x()==0.767913){
+		std::cout<<"Target Point: "<<point_ins.toString() <<"insert"<<std::endl;
+		std::cout<<"The node rect information: "<<new_KT_node_ptr->rect_data.toString()<<std::endl;
+	}
+	*/
+	//
 
 }
 
@@ -320,31 +329,42 @@ void KdTree::search_tree_node(RectHV& target_rect,
 			      std::vector<Point2D>&  result,
 			      KdTreeNode* cur_node_ptr){
 	if(cur_node_ptr){
+		//std::cout<<"Reach an unempty node"<<std::endl;
+		//
 		//Determine where current point is within the triangle
 		if(target_rect.contains(cur_node_ptr->point_data) ){
 			result.push_back(cur_node_ptr->point_data);		
 		}
 
+		if (cur_node_ptr->point_data.x()==0.767913){
+			std::cout<<"I find the target point"<<std::endl;
+		}
+
 		//Search left child 
 		if(cur_node_ptr->left_child){
+				//std::cout<<"Left child entered"<<std::endl;
+				//std::cout<<"Left rectangle: "<<cur_node_ptr->left_child->rect_data.toString()<<std::endl;
 			if(target_rect.intersects(cur_node_ptr->left_child->rect_data)){
-			this->search_tree_node(target_rect, result, cur_node_ptr->left_child);
+				//std::cout<<"Left child search continued"<<std::endl;
+				this->search_tree_node(target_rect, result, cur_node_ptr->left_child);
 			}
 		}
 
 		//Search Right child
 
 		if(cur_node_ptr->right_child){
+				//std::cout<<"Right child entered"<<std::endl;
+				//std::cout<<"Right rectangle: "<<cur_node_ptr->right_child->rect_data.toString()<<std::endl;
 			if(target_rect.intersects(cur_node_ptr->right_child->rect_data)){
+				//std::cout<<"Right child search continued"<<std::endl;
 			this->search_tree_node(target_rect, result, cur_node_ptr->right_child);
 			}
 		}
 
-
+		
 	}
-	else{
-		return;
-	}
+	
+	
 
 }
 

@@ -239,7 +239,64 @@ TEST(KdTree_nearest, circle10){
 
 }
 
+TEST(KdTree_range, case_1){
 
+	KdTree KT_ins{};
+	Point2D point_ins_1(0.5,0.5);
+	
+	KT_ins.insert(point_ins_1);
+
+	RectHV test_rect(0.1,0.1,0.6,0.6);
+	auto result = KT_ins.range(test_rect);
+	for(auto item :result){
+		GTEST_COUT<<item.toString() <<" "; 
+	}
+	std::cout<<std::endl;
+}
+
+TEST(KdTree_range, case_2){
+
+	KdTree KT_ins{};
+	Point2D point_ins_1(0.7,0.2);
+	Point2D point_ins_2(0.5,0.5);
+	Point2D point_ins_3(0.2,0.3);
+	
+	KT_ins.insert(point_ins_1);
+	KT_ins.insert(point_ins_2);
+	KT_ins.insert(point_ins_3);
+        
+	KT_ins.draw();
+
+	RectHV test_rect(0.1,0.1,0.6,0.6);
+	auto result = KT_ins.range(test_rect);
+	for(auto item :result){
+		GTEST_COUT<<item.toString() <<" "; 
+	}
+	std::cout<<std::endl;
+}
+
+TEST(KdTree_range, case_3){
+
+	KdTree KT_ins{};
+	Point2D point_ins_1(0.7,0.2);
+	Point2D point_ins_2(0.5,0.4);
+	Point2D point_ins_3(0.2,0.3);
+	Point2D point_ins_4(0.4,0.7);
+	Point2D point_ins_5(0.9,0.6);
+	
+	KT_ins.insert(point_ins_1);
+	KT_ins.insert(point_ins_2);
+	KT_ins.insert(point_ins_3);
+	KT_ins.insert(point_ins_4);
+	KT_ins.insert(point_ins_5);
+
+	RectHV test_rect(0.1,0.1,0.6,0.6);
+	auto result = KT_ins.range(test_rect);
+	for(auto item :result){
+		GTEST_COUT<<item.toString() <<" "; 
+	}
+	std::cout<<std::endl;
+}
 int main(int argc, char* argv[]){
 	std::cout << "This script is to test the KTtree head file"
 		  << std::endl;

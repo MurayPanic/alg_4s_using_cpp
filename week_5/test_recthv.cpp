@@ -68,6 +68,30 @@ TEST(RectHV_intersects, case_1){
 
 }
 
+TEST(RectHV_intersects, case_2){
+	RectHV rect_ins_1(0.1,0.1,0.6,0.6);
+	RectHV rect_ins_2(0,0, 0.7,1.0);
+	
+	GTEST_COUT<<"The first rect: " <<rect_ins_1.toString()<<std::endl;
+	GTEST_COUT<<"The second rect: " <<rect_ins_2.toString()<<std::endl;
+	EXPECT_TRUE(rect_ins_1.intersects(rect_ins_2));
+	EXPECT_TRUE(rect_ins_2.intersects(rect_ins_1));
+
+}
+
+TEST(RectHV_intersects, case_3){
+	RectHV rect_ins_1(0.5,0.5,0.95,0.95);
+	RectHV rect_ins_2(0.740877,0.345492, 0.793893, 1.000000);
+	
+	GTEST_COUT<<"The first rect: " <<rect_ins_1.toString()<<std::endl;
+	GTEST_COUT<<"The second rect: " <<rect_ins_2.toString()<<std::endl;
+	EXPECT_TRUE(rect_ins_1.intersects(rect_ins_2));
+	EXPECT_TRUE(rect_ins_2.intersects(rect_ins_1));
+
+}
+
+
+
 TEST(RectHV_distanceTo, case_1){
 	RectHV rect_ins_1(0.4, 0.3, 0.8, 0.6);
 	

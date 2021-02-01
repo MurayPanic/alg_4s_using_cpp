@@ -62,8 +62,8 @@ double RectHV::ymax() const{ return this->right_top_y;}
 bool RectHV::contains(Point2D& point_ins){
 	auto px= point_ins.x();
 	auto py= point_ins.y();
-	return px>=this->xmin() && px<= this->xmax() 
-	       && py>= this->ymin() && py<= this->ymax();
+	return (px>=this->xmin() && px<= this->xmax() ) 
+	       && (py>= this->ymin() && py<= this->ymax() );
 }
 
 bool RectHV:: operator == (const RectHV& that ) const{
@@ -85,10 +85,14 @@ std::string RectHV:: toString(){
 
 
 bool RectHV::intersects (RectHV& that){
-	bool intersect_in_x = (this->xmin()<= that.xmin() && that.xmin()<=this->xmax())  ||   (this->xmin() <= that.xmax() && that.xmax() <= this->xmax() );
+	bool intersect_in_x =  (this->xmin()<= that.xmin() && that.xmin()<=this->xmax())  ||   (this->xmin() <= that.xmax() && that.xmax() <= this->xmax() ) ;
 	bool intersect_in_y = (this->ymin() <= that.ymin() && that.ymin() <= this->ymax() ) || (this->ymin() <= that.ymax() && that.ymax() <= this->ymax() );
 
-	return intersect_in_x && intersect_in_y;
+	bool contained_in_x =(that.xmin()<= this->xmin() && this->xmin()<=that.xmax()) || ( that.xmin()<= this->xmax() && this->xmax() <= that.xmax());
+	bool contained_in_y =(that.ymin()<= this->ymin() && this->ymin()<=that.ymax()) || ( that.ymin()<= this->ymax() && this->ymax() <= that.ymax());
+
+
+	return (intersect_in_x && intersect_in_y) || (contained_in_x && contained_in_y) || (intersect_in_x && contained_in_y) ||(intersect_in_y && contained_in_x);
 
 
 }
