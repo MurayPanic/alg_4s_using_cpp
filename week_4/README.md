@@ -53,4 +53,5 @@ To run the test, please provide the address for holding the test cases:
 - When controlling several multiple threads, you need to design a safe mechanism to let the thread stop itself. You can not stop a thread from external. C++ does not provide such a function. In this case, I use a flag *stop_thread* that shared by two threads. Once the flag is set to be true, two threads will stop.
 - To use *unordered_set* for custom classes, you need to provide customized hash function. Also, to use priority queue for customized function, you need to provide the compare function (which is wrapped in a class).
 - To use min oriented priority queue, you need to provide a "larger than" function. So that the priority queue will return the minimum when you do the pop operation.
+- For some tutorials on c++ concurrency library, please refer to [C++11 Concurrency Tutorial - Part 5: Futures](https://baptiste-wicht.com/posts/2017/09/cpp11-concurrency-tutorial-futures.html). 
 
