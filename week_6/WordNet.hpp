@@ -8,6 +8,7 @@
 #include <exception>
 #include <ranges>
 #include "Digraph.hpp"
+#include "SAP.hpp"
 
 
 #pragma once
@@ -30,9 +31,14 @@ class WordNet{
 		int distance(std::string, std::string);
 		std::string sap(std::string, std::string);
 	private:
-		std::unordered_map<int, std::string> synset_map;
+		//A map from node number to noun
+		std::unordered_map<int, std::vector<std::string> > synset_map;
+		//A map from noun to node number
+		std::unordered_map<std::string, std::vector<int> > synset_map_noun_to_num;
+		//The set that hold all the nouns
 		std::unordered_set<std::string> noun_set;
-		Digraph graph_data;
+
+		SAP sap_ins;
 
 
 
@@ -61,7 +67,6 @@ WordNet::WordNet(std::string synsets, std::string hypernyms){
 	std::string line;
 	while(std::getline(synsets_file, line) ){
 
-		if(synsets_file.peek()==EOF){break;}
 		
 		int first_comma_pos=line.find(",");
 		std::string num_str= line.substr(0, first_comma_pos);
@@ -79,10 +84,39 @@ WordNet::WordNet(std::string synsets, std::string hypernyms){
 		*/
 		
 		int num = std::stoi(num_str);
-		std::pair<int, std::string> num_noun_pair = std::make_pair(num, noun_str);
-		this->noun_set.insert(noun_str);
+		
+		//split the long string and extract each word
+		auto noun_str_range = noun_str | std::ranges::views::split(' ');
+
+		std::vector<std::string> noun_list{};
+
+		for (auto noun_item_range : noun_str_range){
+			std::string noun_item{};
+			for(auto& character : noun_item_range){
+				noun_item += character;
+			}
+
+			this->noun_set.insert(noun_item);
+			noun_list.push_back(noun_item);
+
+			if(this->synset_map_noun_to_num.contains(noun_item) ){
+				this->synset_map_noun_to_num[noun_item].push_back(num);
+			}else{
+				std::vector<int> tmp_num_list{num};
+				std::pair<std::string, std::vector<int> > noun_num_list_pair = std::make_pair(noun_item, tmp_num_list);
+	
+				this->synset_map_noun_to_num.insert(noun_num_list_pair);
+			}
+		}
+
+		
+		std::pair<int, std::vector<std::string> > num_noun_pair = std::make_pair(num, noun_list);
+
 		this->synset_map.insert(num_noun_pair);
+
+		if(synsets_file.peek()==EOF){break;}
 	}
+	
 	synsets_file.close();
 
 
@@ -94,7 +128,7 @@ WordNet::WordNet(std::string synsets, std::string hypernyms){
 	
 	int noun_num = this->synset_map.size();
 	Digraph tmp_graph(noun_num);
-	this->graph_data = tmp_graph;
+	//this->graph_data = tmp_graph;
 
 	
 	
@@ -113,10 +147,13 @@ WordNet::WordNet(std::string synsets, std::string hypernyms){
 		}
 		
 		for (int i=1; i<num_vec.size(); ++i){
-			this->graph_data.addEdge(num_vec[0], num_vec[i]);
+			tmp_graph.addEdge(num_vec[0], num_vec[i]);
 		}
 	}	
 
+
+	SAP tmp_sap_ins(tmp_graph);
+	this->sap_ins = tmp_sap_ins;
 
 	
 }
@@ -131,3 +168,29 @@ bool WordNet::isNoun(std::string word){
 
 	return this->noun_set.contains(word);
 }
+
+int WordNet::distance(std::string nounA, std::string nounB){
+	auto query_A = this->synset_map_noun_to_num[nounA];
+	auto query_B = this->synset_map_noun_to_num[nounB];
+	return this->sap_ins.length(query_A, query_B);
+
+}
+
+std::string WordNet::sap(std::string nounA, std::string nounB){
+
+	auto query_A = this->synset_map_noun_to_num[nounA];
+	auto query_B = this->synset_map_noun_to_num[nounB];
+	int sca = this->sap_ins.ancestor(query_A,query_B);
+	std::vector<std::string> synset_str = synset_map[sca];
+	std::string result;
+	
+	for(auto item : synset_str ){
+		result += item;
+		result += " ";
+	}
+	result.pop_back();
+	return result;
+}
+
+
+
