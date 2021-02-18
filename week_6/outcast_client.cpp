@@ -29,7 +29,7 @@ std::vector<std::string> read_outcast_file(std::string outcast_file_dir){
 }
 
 int main(int argc, char* argv[]){
-    std::cout<<"This is a test client of the outclast"<< std::endl;
+    std::cout<<"This is a client of the outcast"<< std::endl;
     if(argc<2){
          throw std::invalid_argument("The provided parameter is not correct.");
     }
