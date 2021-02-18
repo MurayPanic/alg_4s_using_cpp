@@ -11,7 +11,7 @@ Please visit this [link](https://coursera.cs.princeton.edu/algs4/assignments/que
 The dequeue container is developed using doubly linked list. The class of the doubly linked list is defined in the linked_list.hpp.  The file is tested using Google test framework written in the test_linked_list.cpp.  You can compile the unit test with the following command:
 
 ```bash
-clang++ -8 test_linked_list.cpp -o test_linked_list --std=c++2a -lgtest -lpthread
+clang++-8 test_linked_list.cpp -o test_linked_list --std=c++2a -lgtest -lpthread
 ```
 
 then run the unit test file
