@@ -43,7 +43,7 @@ TEST(SeamCarver_height, case_1){
 
 TEST(SeamCarver_cal_pixel_energy, cast_1){
 
-	std::string img_file_name="surfing.png";
+	std::string img_file_name="HJocean.png";
 	Picture PIC_ins(img_file_name);
 	SeamCarver SC_ins(PIC_ins);
 
@@ -57,7 +57,7 @@ TEST(SeamCarver_cal_pixel_energy, cast_1){
 
 TEST(SeamCarver_cal_pixel_energy, cast_2){
 
-	std::string img_file_name="surfing.png";
+	std::string img_file_name="HJocean.png";
 	Picture PIC_ins(img_file_name);
 	SeamCarver SC_ins(PIC_ins);
 
@@ -104,7 +104,7 @@ TEST(SeamCarver_cal_pixel_energy, cast_2){
 }
 TEST(SeamCarver_energy, case_1){
 
-	std::string img_file_name="surfing.png";
+	std::string img_file_name="HJocean.png";
 	Picture PIC_ins(img_file_name);
 	SeamCarver SC_ins(PIC_ins);
 
@@ -118,7 +118,7 @@ TEST(SeamCarver_energy, case_1){
 
 TEST(SeamCarver_show_energy_map, case_1){
 
-	std::string img_file_name="surfing.png";
+	std::string img_file_name="HJocean.png";
 	Picture PIC_ins(img_file_name);
 	SeamCarver SC_ins(PIC_ins);
 
@@ -128,10 +128,8 @@ TEST(SeamCarver_show_energy_map, case_1){
 	int i=0;
 	for(auto iter =energy_map.begin<double>(); iter!=energy_map.end<double>(); ++iter){
 		double energy_val = *iter;
-		//*iter = energy_val* 0 +0.5;
 		if( energy_val >255 && energy_val!=1000){
 		GTEST_COUT<<"The original energy value is:" << energy_val<< std::endl;
-		//GTEST_COUT<<"The revised energy value is: "<< *iter <<std::endl;
 		++i;
 		}
 	}
@@ -146,54 +144,66 @@ TEST(SeamCarver_show_energy_map, case_1){
 	energy_map.convertTo(energy_img, CV_8U);
 	cv::imshow("Energy image", energy_img);
 	cv::waitKey(0);
+	cv::destroyAllWindows();
 }
 
 
 TEST(SeamCarver_findVerticalSeam, case_1){
-	std::string img_file_name="surfing.png";
+	std::string img_file_name="HJocean.png";
 	Picture PIC_ins(img_file_name);
 	SeamCarver SC_ins(PIC_ins);	
 
 	auto vertical_seam = SC_ins.findVerticalSeam();
 	GTEST_COUT<< "Now print the seam: "<<std::endl;
 
-	for(auto item : vertical_seam){
+	int row=SC_ins.height()-1;
+	for(auto col : vertical_seam){
+		
 		std::cout<< GTEST_LINE_HEADER 
-				<< "("<<item.first <<","<<item.second <<")"
+				<< "("<<row <<","<<col <<")"
 				<<std::endl;
+		--row;
 	}
 
 	GTEST_COUT<< "Now show the seam on energy map: "<<std::endl;
+	
+	//Convert the energy map into RGB image
 	auto energy_map = SC_ins.energy_map;
+	cv::Mat energy_img_c1;
+	energy_map.convertTo(energy_img_c1, CV_8UC1);
 	cv::Mat energy_img;
-	energy_map.convertTo(energy_img, CV_8UC3);
+	cv::cvtColor(energy_img_c1, energy_img, cv::COLOR_GRAY2BGR);
 	
 	cv::imshow("Energy image", energy_img);
 	cv::waitKey(0);
+	
 
-	for(auto item : vertical_seam){
-		GTEST_COUT<<"Now color: ("<<item.first<<","<<item.second<<")"<<std::endl;
-		auto pixel =energy_img.at<cv::Vec3b>(item.first, item.second);
+	row=SC_ins.height()-1;
+	for(auto col : vertical_seam){
+		GTEST_COUT<<"Now color: ("<<row<<","<<col<<")"<<std::endl;
+		auto pixel =energy_img.at<cv::Vec3b>(row, col);
 		GTEST_COUT<<"The current pixel value is "<< (double)pixel[0]<<","
 												<< (double)pixel[1]<<","
 												<< (double)pixel[2]<<"," <<std::endl;
-		energy_img.at<cv::Vec3b>(item.first, item.second)=cv::Vec3b(0,0, 255);
+		energy_img.at<cv::Vec3b>(row, col)=cv::Vec3b(0,0, 255);
 
-		pixel =energy_img.at<cv::Vec3b>(item.second, item.first);
+		pixel =energy_img.at<cv::Vec3b>(row, col);
 		GTEST_COUT<<"The modified pixel value is "<< (double)pixel[0]<<","
 												<< (double)pixel[1]<<","
 												<< (double)pixel[2]<<"," <<std::endl;
 
+		--row;
 	}
 	cv::imshow("Energy image with seam", energy_img);
 	cv::waitKey(0);
 
 	
+	cv::destroyAllWindows();
 
 
 }
 
-TEST(SeamCarver_visualVerticalSeam, case_1){
+TEST(SeamCarver_showVerticalSeam, case_1){
 	std::string img_file_name="6x5.png";
 	Picture PIC_ins(img_file_name);
 	SeamCarver SC_ins(PIC_ins);	
@@ -201,19 +211,27 @@ TEST(SeamCarver_visualVerticalSeam, case_1){
 	auto vertical_seam = SC_ins.findVerticalSeam();
 	GTEST_COUT<< "Now print the seam: "<<std::endl;
 
-	for(auto item : vertical_seam){
+	
+	int row=SC_ins.height()-1;
+	for(auto col : vertical_seam){
 		std::cout<< GTEST_LINE_HEADER 
-				<< "("<<item.first <<","<<item.second <<")"
+				<< "("<<row <<","<< col <<")"
 				<<std::endl;
+		--row;
 	}
 
 	GTEST_COUT<< "Now show the seam on energy map: "<<std::endl;
 	auto energy_map = SC_ins.energy_map;
-	cv::Mat energy_img;
-	energy_map.convertTo(energy_img, CV_8UC3);
+	cv::Mat energy_img_c1;
+
+	energy_map.convertTo(energy_img_c1, CV_8UC1);
+
+	cv::Mat energy_img; //three channal image
+	cv::cvtColor(energy_img_c1, energy_img, cv::COLOR_GRAY2BGR);
 	
 	GTEST_COUT<<"Energy image size: "<< energy_img.dims<<std::endl;
 	GTEST_COUT<<"Energy image depth: "<< energy_img.depth()<<std::endl;
+	GTEST_COUT<<"Energy image channel: "<< energy_img.channels()<<std::endl;
 	GTEST_COUT<<"Energy image total element: "<< energy_img.total()<<std::endl;
 	cv::imshow("Energy image", energy_img);
 	cv::waitKey(0);
@@ -232,21 +250,17 @@ TEST(SeamCarver_visualVerticalSeam, case_1){
 		std::cout<<std::endl;
 	}
 
-	for(auto item : vertical_seam){
-		GTEST_COUT<<"Now color: ("<<item.first<<","<<item.second<<")"<<std::endl;
-		auto pixel =energy_img.at<cv::Vec3b>(item.first, item.second);
+	row=SC_ins.height()-1;
+	for(auto col : vertical_seam){
+		GTEST_COUT<<"Now color: ("<< row <<","<< col<<")"<<std::endl;
+		auto pixel =energy_img.at<cv::Vec3b>( row, col);
 		GTEST_COUT<<"The current pixel value is "<< (double)pixel[0]<<","
 												<< (double)pixel[1]<<","
 												<< (double)pixel[2]<<"," <<std::endl;
 		
-		/*
-		energy_img.at<cv::Vec3b>(item.first, item.second)[0]=45;
-		energy_img.at<cv::Vec3b>(item.first, item.second)[1]=45;
-		energy_img.at<cv::Vec3b>(item.first, item.second)[2]=45;
-		*/
-	energy_img.at<cv::Vec3b>(item.first, item.second)= cv::Vec3b(45,45,45);
+	energy_img.at<cv::Vec3b>(row, col)= cv::Vec3b(0,0,255);
 
-		pixel =energy_img.at<cv::Vec3b>(item.first, item.second);
+		pixel =energy_img.at<cv::Vec3b>(row , col);
 		GTEST_COUT<<"The modified pixel value is "<< (double)pixel[0]<<","
 												<< (double)pixel[1]<<","
 												<< (double)pixel[2]<<"," <<std::endl;
@@ -268,6 +282,7 @@ TEST(SeamCarver_visualVerticalSeam, case_1){
 		}
 
 		GTEST_COUT<<"++++++++++++++++++++++++++++++++++++++++="<<std::endl;
+		--row;
 
 	}
 
@@ -288,6 +303,7 @@ TEST(SeamCarver_visualVerticalSeam, case_1){
 	cv::imshow("Energy image with seam", energy_img);
 	cv::waitKey(0);
 
+	cv::destroyAllWindows();
 
 
 	
@@ -295,18 +311,21 @@ TEST(SeamCarver_visualVerticalSeam, case_1){
 
 }
 
-TEST(SeamCarver_showVerticalSeam, case_1){
+TEST(SeamCarver_showVerticalSeam, case_2){
 	std::string img_file_name="6x5.png";
 	Picture PIC_ins(img_file_name);
 	SeamCarver SC_ins(PIC_ins);	
 
 	auto vertical_seam = SC_ins.findVerticalSeam();
 	GTEST_COUT<< "Now print the seam: "<<std::endl;
+	
 
-	for(auto item : vertical_seam){
+	int row=SC_ins.height()-1;
+	for(auto col : vertical_seam){
 		std::cout<< GTEST_LINE_HEADER 
-				<< "("<<item.first <<","<<item.second <<")"
+				<< "("<<row <<","<< col <<")"
 				<<std::endl;
+		--row;
 	}
 
 	GTEST_COUT<< "Now show the seam on energy map: "<<std::endl;
@@ -314,7 +333,7 @@ TEST(SeamCarver_showVerticalSeam, case_1){
 	cv::Mat energy_img;
 	energy_map.convertTo(energy_img, CV_8UC1);
 	
-	
+	//Display ennergy map with 1-channel image
 	cv::imshow("Energy image", energy_img);
 	cv::waitKey(0);
 	
@@ -329,16 +348,18 @@ TEST(SeamCarver_showVerticalSeam, case_1){
 		std::cout<<std::endl;
 	}
 
-	for(auto item : vertical_seam){
-		GTEST_COUT<<"Now color: ("<<item.first<<","<<item.second<<")"<<std::endl;
-		auto pixel =energy_img.at<uchar>(item.first, item.second);
+
+	row=SC_ins.height()-1;
+	for(auto col : vertical_seam){
+		GTEST_COUT<<"Now color: ("<< row <<","<< col <<")"<<std::endl;
+		auto pixel =energy_img.at<uchar>(row, col);
 		GTEST_COUT<<"The current pixel value is "<< (double)pixel <<std::endl;
 		
 		
-		energy_img.at<uchar>(item.first, item.second)=45;
+		energy_img.at<uchar>(row, col)=45;
 
 
-		pixel =energy_img.at<uchar>(item.first, item.second);
+		pixel =energy_img.at<uchar>(row, col);
 		GTEST_COUT<<"The modified pixel value is "<< (double)pixel <<std::endl;
 
 		GTEST_COUT<<"-------------------------------------"<<std::endl;
@@ -355,7 +376,7 @@ TEST(SeamCarver_showVerticalSeam, case_1){
 		}
 
 		GTEST_COUT<<"++++++++++++++++++++++++++++++++++++++++="<<std::endl;
-
+		--row;
 	}
 
 
@@ -372,6 +393,7 @@ TEST(SeamCarver_showVerticalSeam, case_1){
 	cv::imshow("Energy image with seam", energy_img);
 	cv::waitKey(0);
 
+	cv::destroyAllWindows();
 	
 
 	
@@ -380,15 +402,373 @@ TEST(SeamCarver_showVerticalSeam, case_1){
 }
 
 
-TEST(SeamCarver_findVerticalSeam_2, case_2){
-	
-	Picture PIC_ins(10,20);
+
+TEST(SeamCarver_findVerticalSeam, case_2){
+	std::string img_file_name="porsche.jpg";
+	Picture PIC_ins(img_file_name);
 	SeamCarver SC_ins(PIC_ins);	
 
-	SC_ins.findVerticalSeam();
+	auto vertical_seam = SC_ins.findVerticalSeam();
+
+	GTEST_COUT<< "Now show the seam on energy map: "<<std::endl;
+	
+	//Convert the energy map into RGB image
+	auto energy_map = SC_ins.energy_map;
+	cv::Mat energy_img_c1;
+	energy_map.convertTo(energy_img_c1, CV_8UC1);
+	cv::Mat energy_img;
+	cv::cvtColor(energy_img_c1, energy_img, cv::COLOR_GRAY2BGR);
+	
+	cv::imshow("Energy image", energy_img);
+	cv::waitKey(0);
+
+	
+	int row=SC_ins.height()-1;
+	for(auto col : vertical_seam){
+		auto pixel =energy_img.at<cv::Vec3b>(row, col);
+		energy_img.at<cv::Vec3b>(row, col)=cv::Vec3b(0,0, 255);
+		--row;
+
+	}
+	cv::imshow("Energy image with seam", energy_img);
+	cv::waitKey(0);
+	cv::destroyAllWindows();
 	
 
 
+}
+
+TEST(SeamCarver_findHorizontalSeam, case_1){
+	std::string img_file_name="6x5.png";
+	Picture PIC_ins(img_file_name);
+	SeamCarver SC_ins(PIC_ins);	
+
+	auto horizontal_seam = SC_ins.findHorizontalSeam();
+
+	
+	//Convert the energy map into RGB image
+	auto energy_map = SC_ins.energy_map;
+	cv::Mat energy_img_c1;
+	energy_map.convertTo(energy_img_c1, CV_8UC1);
+	cv::Mat energy_img;
+	cv::cvtColor(energy_img_c1, energy_img, cv::COLOR_GRAY2BGR);
+	
+
+	
+	int col=SC_ins.width()-1;
+	for(auto row : horizontal_seam){
+		auto pixel =energy_img.at<cv::Vec3b>(row, col);
+		energy_img.at<cv::Vec3b>(row, col)=cv::Vec3b(0,0, 255);
+		--col;
+
+	}
+	cv::imshow("Energy image with seam", energy_img);
+	cv::waitKey(0);
+	cv::destroyAllWindows();
+	
+
+
+}
+
+TEST(SeamCarver_findHorizontalSeam, case_2){
+	std::string img_file_name="HJocean.png";
+	Picture PIC_ins(img_file_name);
+	SeamCarver SC_ins(PIC_ins);	
+
+	auto horizontal_seam = SC_ins.findHorizontalSeam();
+
+	
+	//Convert the energy map into RGB image
+	auto energy_map = SC_ins.energy_map;
+	cv::Mat energy_img_c1;
+	energy_map.convertTo(energy_img_c1, CV_8UC1);
+	cv::Mat energy_img;
+	cv::cvtColor(energy_img_c1, energy_img, cv::COLOR_GRAY2BGR);
+	
+
+	
+	int col=SC_ins.width()-1;
+	for(auto row : horizontal_seam){
+		auto pixel =energy_img.at<cv::Vec3b>(row, col);
+		energy_img.at<cv::Vec3b>(row, col)=cv::Vec3b(0,0, 255);
+		--col;
+
+	}
+	cv::imshow("Energy image with seam", energy_img);
+	cv::waitKey(0);
+	cv::destroyAllWindows();
+	
+
+
+}
+
+TEST(SeamCarver_findHorizontalSeam, case_3){
+	std::string img_file_name="HJocean.png";
+	Picture PIC_ins(img_file_name);
+	SeamCarver SC_ins(PIC_ins);	
+
+	auto horizontal_seam = SC_ins.findHorizontalSeam();
+
+	
+	//Convert the energy map into RGB image
+	auto energy_map = SC_ins.energy_map;
+	cv::Mat energy_img_c1;
+	energy_map.convertTo(energy_img_c1, CV_8UC1);
+	cv::Mat energy_img;
+	cv::cvtColor(energy_img_c1, energy_img, cv::COLOR_GRAY2BGR);
+	
+
+	
+	int col=SC_ins.width()-1;
+	for(auto row : horizontal_seam){
+		auto pixel =energy_img.at<cv::Vec3b>(row, col);
+		energy_img.at<cv::Vec3b>(row, col)=cv::Vec3b(0,0, 255);
+		--col;
+
+	}
+	cv::imshow("Energy image with seam", energy_img);
+	cv::waitKey(0);
+
+
+	auto vertical_seam = SC_ins.findVerticalSeam();
+
+
+	
+	int row=SC_ins.height()-1;
+	for(auto col : vertical_seam){
+		auto pixel =energy_img.at<cv::Vec3b>(row, col);
+		energy_img.at<cv::Vec3b>(row, col)=cv::Vec3b(0,0, 255);
+		--row;
+
+	}
+
+	
+	cv::imshow("Energy image with seam", energy_img);
+	cv::waitKey(0);
+
+	cv::destroyAllWindows();
+	
+
+
+}
+
+TEST(SeamCarver_findHorizontalSeam, case_4){
+	std::string img_file_name="porsche.jpg";
+	Picture PIC_ins(img_file_name);
+	SeamCarver SC_ins(PIC_ins);	
+
+	auto horizontal_seam = SC_ins.findHorizontalSeam();
+
+	
+	//Convert the energy map into RGB image
+	auto energy_map = SC_ins.energy_map;
+	cv::Mat energy_img_c1;
+	energy_map.convertTo(energy_img_c1, CV_8UC1);
+	cv::Mat energy_img;
+	cv::cvtColor(energy_img_c1, energy_img, cv::COLOR_GRAY2BGR);
+	
+
+	
+	int col=SC_ins.width()-1;
+	for(auto row : horizontal_seam){
+		auto pixel =energy_img.at<cv::Vec3b>(row, col);
+		energy_img.at<cv::Vec3b>(row, col)=cv::Vec3b(0,0, 255);
+		--col;
+
+	}
+	cv::imshow("Energy image with seam", energy_img);
+	cv::waitKey(0);
+	cv::destroyAllWindows();
+	
+
+
+}
+
+TEST(SeamCarver_removeVerticalSeam, case_1){
+
+	std::string img_file_name="HJocean.png";
+	Picture PIC_ins(img_file_name);
+	SeamCarver SC_ins(PIC_ins);	
+
+	auto vertical_seam = SC_ins.findVerticalSeam();
+
+	
+	//Convert the energy map into RGB image
+	auto energy_map = SC_ins.energy_map;
+	cv::Mat energy_img_c1;
+	energy_map.convertTo(energy_img_c1, CV_8UC1);
+	cv::Mat energy_img;
+	cv::cvtColor(energy_img_c1, energy_img, cv::COLOR_GRAY2BGR);
+	
+
+	
+	int row=SC_ins.height()-1;
+	for(auto col : vertical_seam){
+		auto pixel =energy_img.at<cv::Vec3b>(row, col);
+		energy_img.at<cv::Vec3b>(row, col)=cv::Vec3b(0,0, 255);
+		--row;
+
+	}
+	cv::imshow("Energy image with seam", energy_img);
+	cv::waitKey(0);
+
+	GTEST_COUT<<"The original image is"<<std::endl;
+	
+	auto original_picture = SC_ins.picture();
+	original_picture.show();
+
+	GTEST_COUT<<"Now remove the seam"<<std::endl;
+	
+	SC_ins.removeVerticalSeam(vertical_seam);
+
+	GTEST_COUT<<"Now show the seam removed image"<<std::endl;
+
+	auto seamed_removed_picture = SC_ins.picture();
+	seamed_removed_picture.show();
+
+	cv::destroyAllWindows();
+}
+
+
+TEST(SeamCarver_removeVerticalSeam, case_2){
+
+	std::string img_file_name="HJocean.png";
+	Picture PIC_ins(img_file_name);
+	SeamCarver SC_ins(PIC_ins);	
+
+
+	
+
+	GTEST_COUT<<"The original image is"<<std::endl;
+	
+	auto original_picture = SC_ins.picture();
+	original_picture.show();
+
+	GTEST_COUT<<"Now remove the seam for 50 times"<<std::endl;
+	
+	auto vertical_seam = SC_ins.findVerticalSeam();
+	for(int i{0}; i<50; ++i){
+		SC_ins.removeVerticalSeam(vertical_seam);
+		vertical_seam = SC_ins.findVerticalSeam();
+	}
+
+
+	GTEST_COUT<<"Now show the seam removed image"<<std::endl;
+
+	auto seamed_removed_picture = SC_ins.picture();
+	seamed_removed_picture.show();
+
+	cv::destroyAllWindows();
+}
+
+TEST(SeamCarver_removeHorizontalSeam, case_1){
+
+	std::string img_file_name="HJocean.png";
+	Picture PIC_ins(img_file_name);
+	SeamCarver SC_ins(PIC_ins);	
+
+	auto horizontal_seam = SC_ins.findHorizontalSeam();
+
+	
+	//Convert the energy map into RGB image
+	auto energy_map = SC_ins.energy_map;
+	cv::Mat energy_img_c1;
+	energy_map.convertTo(energy_img_c1, CV_8UC1);
+	cv::Mat energy_img;
+	cv::cvtColor(energy_img_c1, energy_img, cv::COLOR_GRAY2BGR);
+	
+
+	
+	int col=SC_ins.width()-1;
+	for(auto row : horizontal_seam){
+		auto pixel =energy_img.at<cv::Vec3b>(row, col);
+		energy_img.at<cv::Vec3b>(row, col)=cv::Vec3b(0,0, 255);
+		--col;
+
+	}
+	cv::imshow("Energy image with seam", energy_img);
+	cv::waitKey(0);
+
+	GTEST_COUT<<"The original image is"<<std::endl;
+	
+	auto original_picture = SC_ins.picture();
+	original_picture.show();
+
+	GTEST_COUT<<"Now remove the seam"<<std::endl;
+	
+	SC_ins.removeHorizontalSeam(horizontal_seam);
+
+	GTEST_COUT<<"Now show the seam removed image"<<std::endl;
+
+	auto seamed_removed_picture = SC_ins.picture();
+	seamed_removed_picture.show();
+
+	cv::destroyAllWindows();
+}
+
+TEST(SeamCarver_removeHorizontalSeam, case_2){
+
+	std::string img_file_name="HJocean.png";
+	Picture PIC_ins(img_file_name);
+	SeamCarver SC_ins(PIC_ins);	
+
+
+	
+
+	GTEST_COUT<<"The original image is"<<std::endl;
+	
+	auto original_picture = SC_ins.picture();
+	original_picture.show();
+
+	GTEST_COUT<<"Now remove the seam for 50 times"<<std::endl;
+	
+	auto horizontal_seam = SC_ins.findHorizontalSeam();
+	for(int i{0}; i<50; ++i){
+		SC_ins.removeHorizontalSeam(horizontal_seam);
+		horizontal_seam = SC_ins.findHorizontalSeam();
+	}
+
+
+	GTEST_COUT<<"Now show the seam removed image"<<std::endl;
+
+	auto seamed_removed_picture = SC_ins.picture();
+	seamed_removed_picture.show();
+
+	cv::destroyAllWindows();
+}
+
+
+TEST(SeamCarver_remove_both_seam, case_1){
+
+	std::string img_file_name="HJocean.png";
+	Picture PIC_ins(img_file_name);
+	SeamCarver SC_ins(PIC_ins);	
+
+
+	
+
+	GTEST_COUT<<"The original image is"<<std::endl;
+	
+	auto original_picture = SC_ins.picture();
+	original_picture.show();
+
+	GTEST_COUT<<"Now remove both vertical and horizontal seam for 50 times"<<std::endl;
+	
+	for(int i{0}; i<50; ++i){
+		GTEST_COUT<<"Now conduct removal for the "<<i <<" time..."<<std::endl;
+		auto horizontal_seam = SC_ins.findHorizontalSeam();
+		SC_ins.removeHorizontalSeam(horizontal_seam);
+		auto vertical_seam = SC_ins.findVerticalSeam();
+		SC_ins.removeVerticalSeam(vertical_seam);
+	}
+
+
+	GTEST_COUT<<"Now show the seam removed image"<<std::endl;
+
+	auto seamed_removed_picture = SC_ins.picture();
+	seamed_removed_picture.show();
+
+	cv::destroyAllWindows();
 }
 
 

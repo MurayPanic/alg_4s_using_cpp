@@ -25,8 +25,8 @@ class SeamCarver{
             int width();
             int height();
             double energy(int, int);
-            std::vector<std::pair<int, int> > findHorizontalSeam();
-            std::vector<std::pair<int, int> > findVerticalSeam();
+            std::vector<int > findHorizontalSeam();
+            std::vector<int > findVerticalSeam();
             void removeHorizontalSeam( std::vector<int>);
             void removeVerticalSeam( std::vector<int> );
 
@@ -35,7 +35,7 @@ class SeamCarver{
 	    cv::Mat energy_map;
 	    void genEnergyMap();
 	    double calPixelEnergy(int, int);
-		bool validateCoordinate(int, int);
+	    bool validateCoordinate(int, int);
 		
             
 
@@ -46,6 +46,7 @@ SeamCarver::SeamCarver(){}
 
 SeamCarver::SeamCarver(Picture PIC_ins): pic_data(PIC_ins){
 	this->genEnergyMap();
+	
 }
 
 SeamCarver::~SeamCarver(){ }
@@ -113,9 +114,9 @@ double SeamCarver::calPixelEnergy(int row, int col){
 	return total_energy;
 }
 
-std::vector<std::pair<int, int> > SeamCarver::findVerticalSeam(){
+std::vector<int > SeamCarver::findVerticalSeam(){
 
-		std::vector< std::pair<int, int> > vertical_seam{}; 
+		std::vector<int > vertical_seam{}; 
 		
 		cv::Mat distTo= cv::Mat::zeros(this->pic_data.height(), this->pic_data.width(), CV_64FC1);
 		cv::Mat pixelTo= cv::Mat::zeros(this->pic_data.height(), this->pic_data.width(), CV_32S );
@@ -177,15 +178,6 @@ std::vector<std::pair<int, int> > SeamCarver::findVerticalSeam(){
 				*/
 
 				int tmp_pixelTo = std::distance(dist_vec.begin(), tmp_distTo_iter);
-				//handle the situation that equal energy exists
-				if(tmp_pixelTo==0){ 
-						tmp_pixelTo= dist_vec[tmp_pixelTo] == dist_vec[tmp_pixelTo+1] ? tmp_pixelTo+1 : tmp_pixelTo;
-					}
-				
-				if(tmp_pixelTo==2){ 
-						tmp_pixelTo= dist_vec[tmp_pixelTo] == dist_vec[tmp_pixelTo-1] ? tmp_pixelTo-1 : tmp_pixelTo;
-				}
-				
 				
 
 				distTo.at<double>(row,col) +=  (*tmp_distTo_iter);
@@ -201,7 +193,9 @@ std::vector<std::pair<int, int> > SeamCarver::findVerticalSeam(){
 				
 			}
 		}
-		
+	
+		//Debug output
+		/*
 		for(int row{0}; row< this->pic_data.height(); ++row){
 			for(int col{0}; col< this->pic_data.width(); ++col){
 				std::cout<<" Target pixel: ("<<row<<","<<col<<")"<<":"
@@ -214,10 +208,10 @@ std::vector<std::pair<int, int> > SeamCarver::findVerticalSeam(){
 			}
 			
 		}
-		
+		*/
 
 
-		//finde minimum energy
+		//find minimum energy
 		
 		std::vector<double> last_row_in_distTo{};
 		int last_row_index = this->height()-1;
@@ -233,11 +227,10 @@ std::vector<std::pair<int, int> > SeamCarver::findVerticalSeam(){
 		//Find the seam
 		int tmp_col = end_point_col;
 		int tmp_row = last_row_index;
-		std::cout<<"the endpoint of the seam: "<<tmp_row<<","<<tmp_col<<std::endl;
 
 		for(tmp_row; tmp_row>=0; --tmp_row){
-			std::pair<int, int> pixel_coor(tmp_row, tmp_col);
-			vertical_seam.push_back(pixel_coor);
+			
+			vertical_seam.push_back(tmp_col);
 			tmp_col += pixelTo.at<int>(tmp_row,tmp_col);
 		}
 
@@ -245,7 +238,6 @@ std::vector<std::pair<int, int> > SeamCarver::findVerticalSeam(){
 
 
 
-		std::cout<<"Process complete"<<std::endl;
 
 		
 		
@@ -257,6 +249,70 @@ std::vector<std::pair<int, int> > SeamCarver::findVerticalSeam(){
 
 }
 
+
+std::vector< int > SeamCarver::findHorizontalSeam(){
+	//Transpose the image and re-calculate the energy map
+	cv::transpose(this->pic_data.img_data, this->pic_data.img_data);
+	this->genEnergyMap();
+
+	//Use findVerticalSeam to get the seam
+	auto horizontal_seam = this->findVerticalSeam();
+
+	//Transpose the image and re-calculate the energy map
+	cv::transpose(this->pic_data.img_data, this->pic_data.img_data);
+	this->genEnergyMap();
+
+	return horizontal_seam;
+}
+
+
+
+void SeamCarver::removeVerticalSeam(std::vector<int> vertical_seam){
+	//check if it is a valid seam
+	if(vertical_seam.size()!= this->height()){
+		throw std::invalid_argument("The provided seam does not have valid length");
+	}
+
+	//Remove the seam by shifting one pixel to the left
+	
+	
+	int row = this->height()-1;
+	int last_col = this->width()-1;
+
+
+
+	for(auto col: vertical_seam){
+		for(int tmp_col=col; tmp_col<last_col;  ++tmp_col){
+			this->pic_data.img_data.at<cv::Vec3b>(row, tmp_col)=
+				this->pic_data.img_data.at<cv::Vec3b>(row, tmp_col+1);
+		}
+		--row;
+	}
+
+	//Cut the image
+	cv::Mat seam_removed_image = this->pic_data.img_data.colRange(0, this->width()-2).clone();
+
+	this->pic_data.img_data= seam_removed_image;
+
+	//Recalculate the energy	
+	this->genEnergyMap();
+
+}
+
+
+void SeamCarver::removeHorizontalSeam(std::vector<int> horizontal_seam){
+
+	//Transpose the image
+	cv::transpose(this->pic_data.img_data, this->pic_data.img_data);
+
+
+	//Use removeVerticalSeam to remove the seam
+	this->removeVerticalSeam(horizontal_seam);
+
+	//Transpose the image and re-calculate the energy map
+	cv::transpose(this->pic_data.img_data, this->pic_data.img_data);
+	this->genEnergyMap();
+}
 
 bool SeamCarver::validateCoordinate(int row, int col){
 
