@@ -2,7 +2,7 @@
 
 These files are C++ implementation of the assignment from the course "Algorithms Part I"  on Cousera.
 
-Please visit this link for more details
+Please visit this [link](https://coursera.cs.princeton.edu/algs4/assignments/kdtree/specification.php) for more details
 
 
 

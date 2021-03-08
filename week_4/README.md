@@ -2,7 +2,7 @@
 
 These files are C++ implementation of the assignment from the course "Introduction Algorithm" on Cousera.
 
-Please visit this link for more details
+Please visit this [link](https://coursera.cs.princeton.edu/algs4/assignments/collinear/specification.php) for more details
 
 ## Board.hpp
 
