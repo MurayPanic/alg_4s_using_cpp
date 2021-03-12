@@ -18,8 +18,14 @@ TEST(BaseballElimination_constructor, case_1){
 
 TEST(BaseballElimination_constructor, case_2){
 
-    std::string filename = "/baseball/team4.txt";
+    std::string filename = "/baseball/teams4.txt";
     BaseballElimination BE_ins(filename);
+}
+
+TEST(BaseballElimination_constructor, case_3){
+
+    std::string filename = "/team4.txt";
+    EXPECT_THROW (BaseballElimination BE_ins(filename), std::exception );
 }
 
 

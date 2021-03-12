@@ -3,6 +3,7 @@
 #include<vector>
 #include<filesystem>
 #include<fstream>
+#include<exception>
 
 #ifndef BASEBALLELLIMINATION_HPP
 #define BASEBALLELLIMINATION_HPP
@@ -47,12 +48,44 @@ BaseballElimination::BaseballElimination(std::string filename){
         std::string  path_str = std::filesystem::current_path();
         path_str += filename;
         std::filesystem::path  complete_path(path_str);
+        
         std::ifstream input_file;
         input_file.open(complete_path);
+
+        if(input_file.fail()){
+                throw std::invalid_argument("Fail to open file.");
+        }       
+
         std::string tmp_number_or_teams;
         input_file >> tmp_number_or_teams;
         this->number_of_teams = std::stoi(tmp_number_or_teams);
-        //need to read the remain record March 09 2021
+        for(int i{0}; i< this->number_of_teams; ++i){
+                std::string tmp;
+                input_file >> tmp;
+                this->name_of_teams.push_back(tmp);
+
+                input_file >>tmp;
+                int win = std::stoi(tmp);
+                this->win_vec.push_back(win);
+
+                input_file >> tmp;
+                int loss = std::stoi(tmp);
+                this->loses_vec.push_back(loss);
+
+                input_file >> tmp;
+                int remaining = std::stoi(tmp);
+                this->remaining_vec.push_back(remaining);
+
+                std::vector<int> against_vec{};
+                for(int j{0}; j< this->number_of_teams;++j){
+                        input_file >>tmp;
+                        int against = std::stoi(tmp);
+                        against_vec.push_back(against);
+                }
+                this->against_array.push_back(against_vec);
+                
+
+        }
 
 }
 
