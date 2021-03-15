@@ -17,16 +17,16 @@ class FlowEdge{
         FlowEdge();
         FlowEdge(int, int, double);
         FlowEdge(int, int, double, double);
-        FlowEdge(FlowEdge&);
+        FlowEdge(const FlowEdge&);
         ~FlowEdge();
 
         void operator= (FlowEdge&);
-        int from();
-        int to();
-        double capacity();
-        double flow();
+        int from() const;
+        int to() const;
+        double capacity() const;
+        double flow() const;
         int other(int);
-        double residualCapaictyTo(int); 
+        double residualCapacityTo(int); 
         void addResidualFlowTo(int, double);
         std::string toString();
     
@@ -83,7 +83,7 @@ FlowEdge::FlowEdge(int v, int w, double capacity_val, double flow_val){
 
 }
 
-FlowEdge::FlowEdge(FlowEdge& FE_ins){
+FlowEdge::FlowEdge(const FlowEdge& FE_ins){
     this->v = FE_ins.from();
     this->w = FE_ins.to();
     this->capacity_val = FE_ins.capacity();
@@ -103,19 +103,19 @@ void FlowEdge::operator=( FlowEdge& FE_ins){
 
 }
 
-int FlowEdge::from(){
+int FlowEdge::from() const{
     return this->v;
 }
 
-int FlowEdge::to(){
+int FlowEdge::to() const{
     return this->w;
 }
 
-double FlowEdge::capacity(){
+double FlowEdge::capacity() const{
     return this->capacity_val;
 }
 
-double FlowEdge::flow(){
+double FlowEdge::flow() const{
     return this->flow_val;
 }
 
@@ -127,7 +127,7 @@ int FlowEdge::other(int vertex){
     }
 }
 
-double FlowEdge::residualCapaictyTo(int vertex){
+double FlowEdge::residualCapacityTo(int vertex){
         if(vertex == this->v){return this->flow_val ;      }
     else if(vertex == this->w){return this->capacity_val - this->flow_val; }
     else {
