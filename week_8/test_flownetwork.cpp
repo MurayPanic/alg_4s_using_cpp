@@ -1,6 +1,9 @@
 #include<iostream>
 #include "gtest/gtest.h"
 
+#define GTEST_COUT std::cout<<"[CUSTOM INFO] "
+#define GTEST_LINE_HEADER "[           ] "
+
 #define private public
 	#include "FlowNetwork.hpp"
 #undef private
@@ -14,6 +17,13 @@ TEST(FlowNetwork_constructor, case_2){
 	
 	FlowNetwork FN_ins(20);
 	EXPECT_THROW(FlowNetwork FN_ins_2(-20), std::invalid_argument);
+}
+
+TEST(FlowNetwork_constructor, case_3){
+	
+	FlowNetwork FN_ins(8,15);
+	GTEST_COUT<< FN_ins.toString();
+	
 }
 
 

@@ -20,7 +20,8 @@ class FlowEdge{
         FlowEdge(const FlowEdge&);
         ~FlowEdge();
 
-        void operator= (FlowEdge&);
+        void operator= (const FlowEdge&);
+        bool operator== (const FlowEdge&);
         int from() const;
         int to() const;
         double capacity() const;
@@ -95,12 +96,19 @@ FlowEdge::~FlowEdge(){}
 
 
 //Member Function
-void FlowEdge::operator=( FlowEdge& FE_ins){
+void FlowEdge::operator=(const FlowEdge& FE_ins){
         this->v = FE_ins.from();
         this->w = FE_ins.to();
         this->capacity_val = FE_ins.capacity();
         this->flow_val = FE_ins.flow();
 
+}
+
+bool FlowEdge::operator== (const FlowEdge& FE_ins){
+    return this->v == FE_ins.from() &&
+           this->w == FE_ins.to() &&
+           this->capacity_val == FE_ins.capacity() &&
+           this->flow_val == FE_ins.flow();
 }
 
 int FlowEdge::from() const{
