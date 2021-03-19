@@ -160,11 +160,11 @@ FlowNetwork BaseballElimination::construct_graph(int target_team){
                 if(i== target_team){continue;}
                 int tmp_capacity = max_target_team_total_win - win_vec[i] >=0 ? max_target_team_total_win - win_vec[i] : 0;
                 
-                if(tmp_capacity<0){
-                        std::cout<<"I finid some negative capacity"<<tmp_capacity<<std::endl;
+                if(max_target_team_total_win - win_vec[i] < 0){
+                        std::cout<<"I finid some negative capacity in "<<i <<": "<<max_target_team_total_win - win_vec[i] <<std::endl;
                 }
 
-                FlowEdge team_target_edge (i + game_vertices, total_num_of_nodes-1, tmp_capacity,0 );
+                FlowEdge team_target_edge (i + game_vertices+1, total_num_of_nodes-1, tmp_capacity,0 );
                 FN_data.addEdge(team_target_edge);
         }
 
@@ -187,7 +187,7 @@ std::vector<std::string> BaseballElimination::certificateOfElimination(std::stri
         //Find team index
         auto team_iter = std::find(this->name_of_teams.begin(),this->name_of_teams.end(), team_name );
         int team_index = std::distance(this->name_of_teams.begin(), team_iter);
-
+        std::cout<<"team_index: "<<team_index<<std::endl;
         //Construct residual grapth
         FlowNetwork FN_data = this->construct_graph( team_index );
         FordFulkerson FF_ins(FN_data, 0, FN_data.V()-1 );

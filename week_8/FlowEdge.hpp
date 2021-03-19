@@ -154,9 +154,11 @@ void FlowEdge::addResidualFlowTo(int vertex, double delta){
     }
     else if(vertex == this->w){
         this->flow_val += delta;
+    }else{
+        throw std::invalid_argument("invalid endpoint");
     }
 
-    if(std::abs(this->flow_val) < 1E-10){
+    if(std::abs(this->flow_val) <= 1E-10){
         this->flow_val = 0.0;
 
     }
@@ -177,10 +179,11 @@ void FlowEdge::addResidualFlowTo(int vertex, double delta){
 }
 
 std::string FlowEdge::toString(){
+    std::string capacity_str = std::abs(capacity_val-DBL_MAX) <1E-10 ? "INF" : std::to_string(capacity_val);
     std::string FE_str = std::to_string(this->v) +
                         "->" + std::to_string(this->w) +
                         " " + std::to_string(this->flow_val)+
-                       "/" +std::to_string(this->capacity_val);
+                       "/" +capacity_str;
     
     return FE_str;
 }
