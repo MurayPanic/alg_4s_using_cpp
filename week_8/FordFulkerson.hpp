@@ -1,7 +1,7 @@
 #include <iostream>
 #include <queue>
 #include <vector>
-#include <climits>
+#include <limits>
 #include "FlowNetwork.hpp"
 
 #pragma once
@@ -71,9 +71,8 @@ FordFulkerson::FordFulkerson(FlowNetwork& FN_ins, int input_source, int input_ta
 
 	int counter{0};
 	while(this->hasAugmentedPath() ){
-		//std::cout<<"The "<< counter++ << " iteration;"<<std::endl;
-		//Finde\ the bottleneck on the augmented path
-		double bottle = DBL_MAX;
+		//Finde the bottleneck on the augmented path
+		double bottle = std::numeric_limits<double>::max();
 
 		for(int cur_node = this->target; cur_node!= this->source; cur_node = this->edgeTo[cur_node].other(cur_node)){
 			
@@ -82,7 +81,6 @@ FordFulkerson::FordFulkerson(FlowNetwork& FN_ins, int input_source, int input_ta
 			
 
 		}
-		//std::cout<< "I am place 2"<<std::endl;
 
 		//Reduce the capacity accordingly
 
@@ -90,50 +88,14 @@ FordFulkerson::FordFulkerson(FlowNetwork& FN_ins, int input_source, int input_ta
 			
 			
 			
-			/* if(cur_node == 3){
-				std::cout<<"--------------------------"<<std::endl;
-				std::cout<<"the node 3 in augmented path"<<std::endl;
-				std::cout<<"Its current edge status is: "<< std::endl;
-				
-				for(auto item : this->FN_data.adj(cur_node)) {
-					std::cout<< item.toString()<<std::endl;
-				}
-
-
-				
-			} */
 
 
 			edgeTo[cur_node].addResidualFlowTo(cur_node, bottle);
 
-		/* 	if(cur_node == 3){
-				
-				std::cout<<"The bottle is: "<<bottle<<std::endl;
-
-		
-
-			std::cout<<"***************************"<<std::endl;
-			std::cout<<"The whole path is: "<< std::endl;
-			for(int index = this->target; index!= this->source; index = this->edgeTo[index].other(index)){
-						std::cout<<this->edgeTo[index].toString()<<std::endl;
-					}
-			std::cout<<"***************************"<<std::endl;
-
-			std::cout<<"--------------------------"<<std::endl;
-
-				
-			} */
 			
 			
 		}
 
-		/*
-		std::cout<< "I am place 3"<<std::endl;
-		std::cout<< "The reduce capacity is: "<<std::endl;
-		for (auto edge : this->edgeTo){
-			std::cout<<edge.toString()<<std::endl;
-		}
-		*/
 
 		//Update residual graph
 		FlowNetwork updated_graph(this->FN_data.V());
@@ -157,7 +119,6 @@ FordFulkerson::FordFulkerson(FlowNetwork& FN_ins, int input_source, int input_ta
 					}
 				}
 				
-				//std::cout<< "I am in  "<<i<<" Now process tmp edge: " <<edge.toString()<<std::endl;
 				bool same_edge = false;
 				for(auto item : aug_path){
 					if (edge.to()==item.to()  && edge.from()==item.from() ){
@@ -166,40 +127,10 @@ FordFulkerson::FordFulkerson(FlowNetwork& FN_ins, int input_source, int input_ta
 					}
 				}
 				if(!same_edge){updated_graph.addEdge(edge);}
-				/*
-				bool same_edge = edge.to()==edgeTo[i].to()  && edge.from()==edgeTo[i].from() ;
-
-				if(same_edge){
-					updated_graph.addEdge(edgeTo[i]); 
-				}else{
-					updated_graph.addEdge(edge); 
-				}
-				
-				if(i==3){
-						std::cout<<"I am in i=3 loop"<<std::endl;
-						std::cout<<"same_edge value: "<< same_edge<<std::endl;
-						std::cout<< "edgeTo[i]: "<<edgeTo[i].toString()<<std::endl;
-						std::cout<< "edge: "<<edge.toString()<<std::endl;
-				}
-				*/
 			}
-			//std::cout<< "current updated_graph is" <<updated_graph.toString()<<std::endl;
-			//std::cout<<"------------"<<std::endl;
 		}
 
 		this->FN_data = updated_graph;
-		//std::cout<< "the updated_grapth is "<< this->FN_data.toString() <<std::endl;
-        /*if(this->marked[3]==true){
-		std::cout<<"After add residual the edge status is: "<< std::endl;
-				
-				for(auto item : this->FN_data.adj(3)) {
-					std::cout<< item.toString()<<std::endl;
-					
-				}
-		std::cout<<"------------------------------Agumented----------------------------"<<std::endl;
-		}*/
-		//std::cout<<"Iteration: "<<counter++<<std::endl;
-        //Update max flow
 		this->max_flow_value += bottle;
 		
 
@@ -208,7 +139,6 @@ FordFulkerson::FordFulkerson(FlowNetwork& FN_ins, int input_source, int input_ta
 
 	}
 
-	std::cout<<"The final flow graph is:"<<FN_data.toString()<<std::endl;
 	this->check();
 
 }
@@ -236,31 +166,15 @@ bool FordFulkerson::hasAugmentedPath(){
 		int cur_node = helper_queue.front();
 		helper_queue.pop();
 
-		//std::cout<<"The cur_node is: "<<cur_node << std::endl;
 			
 		std::vector<FlowEdge> edge_list = this->FN_data.adj(cur_node);
 		
 		for(FlowEdge FE_item : edge_list ){
 			int next_node = FE_item.other(cur_node);
-			//testoutput
-				/*
-				if(next_node==3){
-					std::cout<<"+++++++++ "<<std::endl;
-					std::cout<<"I now handl node 3 related edge"<<std::endl;
-					std::cout<<"marked status: "<< this->marked[next_node]<<std::endl;
-					std::cout<<"edge status: "<< FE_item.residualCapacityTo(next_node)<<std::endl;
-					std::cout<< "The current edge info is  "<<FE_item.toString()<<std::endl;
-					std::cout<<"+++++++++ "<<std::endl;
-				} 
-				
-				if(next_node==3 && FE_item.to()==3 &&FE_item.residualCapacityTo(3) ==0){
-					std::cout<<"Node 3 already full"<<std::endl;
-				} */
 
 
 			if(!this->marked[next_node ] && FE_item.residualCapacityTo(next_node )>0.0 ){
 				
-				//if(next_node==3){std::cout<<"Node 3 visited"<<std::endl;}
 
 				this->marked[next_node]=true;
 				this->edgeTo[next_node] = FE_item;
@@ -272,19 +186,6 @@ bool FordFulkerson::hasAugmentedPath(){
 		
 	}
 
-	//test output 
-	/*
-	std::cout<< "The following is the marked matrix"<<std::endl;
-	for(auto item : this-> marked){
-		std::cout<<item<<std::endl;
-	}
-
-	
-	std::cout<< "The following is the EdgeTO matrix"<<std::endl;
-	for(auto item : this-> edgeTo){
-		std::cout<<item.toString()<<std::endl;
-	}
-	*/
 	return this->marked[this->target];
 
 
