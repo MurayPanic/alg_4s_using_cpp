@@ -1,7 +1,7 @@
 #include<iostream>
 #include<string>
 #include<exception>
-
+#include<limits>
 #include<cmath>
 
 #ifndef FLOWEDGE_HPP
@@ -180,7 +180,7 @@ void FlowEdge::addResidualFlowTo(int vertex, double delta){
 }
 
 std::string FlowEdge::toString(){
-    std::string capacity_str = std::abs(capacity_val-DBL_MAX) <1E-10 ? "INF" : std::to_string(capacity_val);
+    std::string capacity_str = std::abs(capacity_val-std::numeric_limits<double>::max()) <1E-10 ? "INF" : std::to_string(capacity_val);
     std::string FE_str = std::to_string(this->v) +
                         "->" + std::to_string(this->w) +
                         " " + std::to_string(this->flow_val)+

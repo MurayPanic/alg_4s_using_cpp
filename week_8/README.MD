@@ -2,13 +2,13 @@
 
 These files are the C++ implementation of the "Baseball Elimination " assignment in the book *Algorithms 4 th edition*
 
-Please visit this [link](https://coursera.cs.princeton.edu/algs4/assignments/baseball/faq.php) for more details.
+Please visit this [coursera](https://coursera.cs.princeton.edu/algs4/assignments/baseball/faq.php) or the [book website](https://www.cs.princeton.edu/courses/archive/spring04/cos226/assignments/baseball.html) for more details.
 
 
 
 ## FlowEdge.hpp
 
-The FlowEdge class is used for describe an edge using residual. It is a basic element for construct the flow network. This head file is the C++ implementation of the [flowedge.java](). The corresponding test file is provided. You can compile the unit test with the following command:
+The FlowEdge class is used for describe an edge using residual. It is a basic element for construct the flow network. This head file is the C++ implementation of the [FlowEdge.java](https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/FlowEdge.java.html). The corresponding test file is provided. You can compile the unit test with the following command:
 
 ```bash
 $ g++-10 test_flowedge.cpp -o test_flowedge --std=c++2a -lgtest -lpthread
@@ -20,7 +20,7 @@ then run the unit test file.
 
 ## FlowNetwork.hpp
 
-The FlowNetwork class describe a network using the flow edge. This head file is the C++ implementation of the [FlowNetwork.java](). The corresponding test file is provided. You can compile the unit test with the following command:
+The FlowNetwork class describe a network using the flow edge. This head file is the C++ implementation of the [FlowNetwork.java](https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/FlowNetwork.java.html). The corresponding test file is provided. You can compile the unit test with the following command:
 
 ```bash
 $ g++-10 test_flownetwork.cpp -o test_flownetwork --std=c++2a -lgtest -lpthread
@@ -32,7 +32,7 @@ then run the unit test file.
 
 ## FordFulkerson.hpp
 
-The FordFulkerson class use the Ford-Fulkerson algorithm to compute the max-flow/min-cut on a flow network. This head file is the C++ implementation of the [FordFulkerson.hpp]() . However, due to the different characteristic of the data member storage strategy, the API of this head file is slightly different from the original java implementation. The Ford-Fulkerson algorithm requires searching on the an flow network and the flow in the network needs to be updated after finding an augmented path. This is the difficult point in C++ implementation. My implementation is not in the most efficient way. But in other to keep the API consistent with the original java implementation, I did not further optimize it. 
+The FordFulkerson class use the Ford-Fulkerson algorithm to compute the max-flow/min-cut on a flow network. This head file is the C++ implementation of the [FordFulkerson.hpp](https://algs4.cs.princeton.edu/64maxflow/FordFulkerson.java.html) . However, due to the different characteristic of the data member storage strategy, the API of this head file is slightly different from the original java implementation. The Ford-Fulkerson algorithm requires searching on the an flow network and the flow in the network needs to be updated after finding an augmented path. This is the difficult point in C++ implementation. My implementation is not in the most efficient way. But in other to keep the API consistent with the original java implementation, I did not further optimize it. 
 
 The corresponding test file is provided. You can compile the unit test with the following command:
 
