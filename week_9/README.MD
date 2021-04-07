@@ -42,6 +42,8 @@ The BoggleSolver is the required class by the assignment. It receive a dictionar
 
 This class solve the boggle by conducting depth first search(DFS) on the Boggle board. At each step when a new word is obtained based on the previeous step, it will check whether the word is contained in the dictionary, and whether there are any other words in the dictionary that use the current word as prefix. If ther are no any other words that use the current word as prefix, the DFS will return and will not extend the current path. 
 
+Noted that when conducting DFS on board, searches that start from different position does not share the *marked* table. Therefore, when conducting the search recursively, the *marked* table should be passed as parameter.
+
  You can compile the unit test with the following command:
 ```bash
 $ g++-10 test_bogglesolver.cpp -o test_bogglesolver --std=c++2a -lgtest -lpthread -lstdc++fs
@@ -63,3 +65,4 @@ You can run the application with the following command:
 ```bash
 $ ./BoggleSolver_client <dictionary_file_name> <board_name>
 ```
+
