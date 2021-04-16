@@ -2,7 +2,7 @@
 
 These files are the C++ implementation of the "Baseball Elimination " assignment in the book *Algorithms 4 th edition*
 
-Please visit this [coursera](https://coursera.cs.princeton.edu/algs4/assignments/baseball/faq.php) or the [book website](https://www.cs.princeton.edu/courses/archive/spring04/cos226/assignments/baseball.html) for more details.
+Please visit the [coursera](https://coursera.cs.princeton.edu/algs4/assignments/baseball/faq.php) or the [book website](https://www.cs.princeton.edu/courses/archive/spring04/cos226/assignments/baseball.html) for more details.
 
 
 
