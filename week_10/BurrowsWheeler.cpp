@@ -23,10 +23,10 @@ class BurrowsWheeler{
 		~BurrowsWheeler();
 		void transform();
 		void inverseTransform();
-		void main(std::string, std::string);
+		void main(std::string&, std::string);
 	private:
 		std::string  data;
-		CircularSuffixArray CSA_ins;
+		CircularSuffixArray* CSA_ins_ptr;
 		union {
 			unsigned int integer;
 			unsigned char char_byte[4];
@@ -42,17 +42,12 @@ BurrowsWheeler::~BurrowsWheeler(){}
 
 //Member function
 void BurrowsWheeler::transform(){
-	//std::cout<<"Transform is called" <<std::endl;
-
-	//Find the first
 	
-	for( unsigned int i{0}; i<this->CSA_ins.length(); ++i){
-	        unsigned int index_val = this->CSA_ins.index(i);
+	
+	for( unsigned int i{0}; i<this->CSA_ins_ptr->length(); ++i){
+	        unsigned int index_val = this->CSA_ins_ptr->index(i);
 		if(index_val==0){
-			/*
-			std::bitset<32> bin_i(i);
-			std::cout<<bin_i;
-			*/
+		
 
 			this->digit.integer=i;
 			std::cout<<this->digit.char_byte[3]
@@ -60,8 +55,6 @@ void BurrowsWheeler::transform(){
 					<<this->digit.char_byte[1]
 					<<this->digit.char_byte[0];
 			
-			
-
 			break;
 		}
 		
@@ -69,15 +62,12 @@ void BurrowsWheeler::transform(){
 
 
 	//The index return value-1 equals the original index of the last letter
-	for(int i{0}; i<this->CSA_ins.length(); ++i){
-		int original_row = this->CSA_ins.index(i);
-		int original_index = original_row==0 ? CSA_ins.length()-1 : original_row-1;
+	for(int i{0}; i<this->CSA_ins_ptr->length(); ++i){
+		int original_row = this->CSA_ins_ptr->index(i);
+		int original_index = original_row==0 ? CSA_ins_ptr->length()-1 : original_row-1;
 		std::cout<< this->data.at(original_index);
-		/*
-		int int_char = this->data.at(original_index);
-		std::bitset<8> bin_val(int_char );
-		std::cout<< bin_val;
-		*/
+	
+		
 	}
 	
 }
@@ -95,45 +85,20 @@ void BurrowsWheeler::inverseTransform(){
 
 	
 	//last_col: last column of the sorted suffixes array
-	auto last_col = this->data;
-	last_col.erase(0,4);
+	std::vector<unsigned char>  last_col( this->data.begin()+4, this->data.end() );
 	
-	/*
-	//Convert the binary string to ASCII string;
-	std::string last_col="";
-	std::string tmp="";
-	int counter{0};
-	for(auto digit: last_col_bin){
-		++counter;
-		tmp += digit;
-		if( counter%8 == 0){
-			std::bitset<8> digit_bin(tmp);
-		       	int digit_int = digit_bin.to_ulong();
-			unsigned char character = digit_int;
-			last_col+= ( character );
-			tmp.clear();
-		}
-	}
-	*/
-	//std::cout<< "Last col:"<<last_col<<std::endl;	
+	
+	
 
 	//Deduct the first column of the suffix array
 	//first_col: first column of the sorted suffixes array
 	//	      must use unsigned char array, can not use string directly
 	//	      Because string is a char array. The data conversion may 
 	//	      may the program unapplicable to non text data.
-	std::vector<unsigned char> first_col;
-	for(unsigned char item : last_col){
-		first_col.push_back(item);
-	}
+	std::vector<unsigned char> first_col(last_col.begin(), last_col.end() );
 	std::sort(first_col.begin(), first_col.end());
 
-	/*
-	for(auto character : first_col_of_sorted_suffixes){
-		std::cout<<character;
-	}
-	std::cout<<std::endl;
-	*/
+	
 
 
 	//Deduct the next[] array
@@ -167,19 +132,14 @@ void BurrowsWheeler::inverseTransform(){
 	
 	}
 
-	/*
-	std::cout<< "The next is: " << std::endl;
-	for (auto item : next){
-		std::cout<<item<<std::endl;
-	}
-	*/
+	
 
 	//Recover the message
 	unsigned int index =first;
 	for(int i{0}; i< first_col.size();++i){
-		unsigned char character = first_col.at(index);
-		std::cout<< character;
-		index = next[index];
+		
+		std::cout << (unsigned char) first_col.at(index);
+		index = next.at(index);
 	
 	}
 
@@ -187,12 +147,12 @@ void BurrowsWheeler::inverseTransform(){
 
 }
 
-void BurrowsWheeler::main(std::string file_str, std::string args){
+void BurrowsWheeler::main(std::string& file_str, std::string args){
 	this->data = file_str;
 	
 	if(args=="-"){
 		CircularSuffixArray CSA_tmp(file_str);
-		this->CSA_ins = CSA_tmp;
+		this->CSA_ins_ptr = &CSA_tmp;
 		this->transform();
 	}else if(args=="+"){
 		this->inverseTransform();
@@ -203,47 +163,16 @@ void BurrowsWheeler::main(std::string file_str, std::string args){
 }
 
 int main(int argc, char* argv[]){
-	/*	
-	if(argc==1){	
-		throw std::invalid_argument("Invalid arguments");
-	}
 	
-	std::string indicator = argv[1];
-	std::string filename = argv[2];
-	
-	std::string path_str = std::filesystem::current_path();
-	path_str += filename;
-	std::filesystem::path complete_path(path_str);
-	std::ifstream input_file;
-	input_file.open(complete_path, std::ios::in | std::ios::binary);
-	if(input_file.fail()){
-		throw std::invalid_argument("the provide data file open failed");
-	}
-
-	BurrowsWheeler BW_ins{};
-	
-
-	
-	std::string file_str="";
-	while(!input_file.eof()){
-		char tmp;
-		input_file.read(&tmp, sizeof(tmp));
-		if(input_file.fail()){break;}
-		file_str+= tmp;
-
-	}	
-	//file_str.pop_back();
-	*/
 
 	std::string indicator = argv[1];
 	std::string file_str="";
-	std::string tmp="";
 	while(std::cin.peek() != EOF){
-		tmp = std::cin.get();
-		file_str+=tmp;
+		file_str += std::cin.get();
+		
 	}
 
-	//file_str.pop_back();
+
 	BurrowsWheeler BW_ins{};
 	BW_ins.main(file_str, indicator);
 }

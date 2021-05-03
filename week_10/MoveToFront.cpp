@@ -45,7 +45,7 @@ void MoveToFront::encode(){
 		radix[index]=0;
 	}
 
-	//std::cout<<std::endl;
+
 	
 }
 
@@ -90,34 +90,7 @@ void MoveToFront::main(std::string file_str, std::string args){
 }
 
 int main(int argc, char* argv[]){
-	/* if(argc==1){
-                throw std::invalid_argument("Invalid arguments");
-        }
-
-        std::string indicator = argv[1];
-        std::string filename = argv[2];
-
-        std::string path_str = std::filesystem::current_path();
-        path_str += filename;
-        std::filesystem::path complete_path(path_str);
-        std::ifstream input_file;
-        input_file.open(complete_path, std::ios::in | std::ios::binary);
-        if(input_file.fail()){
-                throw std::invalid_argument("the provide data file open failed");
-        }
-
-        MoveToFront MTF_ins{};
-
-	std::string file_str="";
-        while(!input_file.eof()){
-                char tmp;
-                input_file.read(&tmp, sizeof(tmp));
-                if(input_file.fail()){break;}
-                file_str+= tmp;
-
-        }
-        //file_str.pop_back();
-	*/
+	
 	
         std::string indicator = argv[1];
         MoveToFront MTF_ins{};

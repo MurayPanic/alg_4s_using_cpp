@@ -142,7 +142,7 @@ void Huffman::writeTrie(Huffman::Node* node_x_ptr){
 		this->output_str+='1';	
 		std::bitset<8> ch_bin( (unsigned int)node_x_ptr->ch );
 		this->output_str+= (ch_bin.to_string());
-		//std::cout<< node_x_ptr->ch <<": " <<ch_bin <<std::endl;
+		
 		return;
 	}
 
@@ -156,22 +156,20 @@ Huffman::Node* Huffman::readTrie( std::string::iterator& data_ptr ){
 			
 		
 		bool isLeaf= (*data_ptr)=='1';
-		//std::cout<<"current readin character: "<< *data_ptr<<std::endl;
-		//std::cout<<isLeaf<<std::endl;
-
+	
 		if(isLeaf==true){
 			std::string character_bin_str(data_ptr+1, data_ptr+9);
 			
 			std::bitset<8> character_bin(character_bin_str);
 			unsigned int character_int = character_bin.to_ulong();
 			unsigned char character = character_int;
-			//std::cout<<"I got a string: "<< character_bin_str <<": "<< character <<std::endl;
+			
 			data_ptr+=9;
 			return new Huffman::Node(character, -1, nullptr, nullptr);
 
 		}else{
 			++data_ptr;
-			//std::cout<<"Now go to child"<<std::endl;
+			
 			return new Huffman::Node('\0', -1, this->readTrie(data_ptr), this->readTrie(data_ptr) );
 		}
 
@@ -202,15 +200,7 @@ void Huffman::compress(){
 		++freq.at(index);
 	}
 
-	/*	
-	std::cout<<"freqency table"<<std::endl;
-	int i{0};
-	for(auto item : freq){
-		unsigned char character = i;
-		std::cout<<character <<": "<<item<<std::endl;
-		++i;
-	}
-	*/
+	
 
 	//Build trie and code table
 	Huffman::Node* root=this->buildTrie(freq);
@@ -276,12 +266,12 @@ void Huffman::expand(){
 	//read data length;
 	int pos = std::distance(this->data.begin(),data_ptr );
 	
-	std::string encoded_data_length_str = this->data.substr(pos, sizeof(unsigned int)*8 );
-	std::bitset<sizeof(unsigned int)*8 > encoded_data_length_bin(encoded_data_length_str) ;
+	std::string encoded_data_length_str = this->data.substr(pos, 32 );
+	std::bitset<32> encoded_data_length_bin(encoded_data_length_str) ;
 	int  encoded_data_length= encoded_data_length_bin.to_ullong();
 
 	//Move data_ptr and skip the data length
-	data_ptr += sizeof(unsigned int)*8;
+	data_ptr += 32;
 
 
 	//decode using the Huffman trie

@@ -1,6 +1,7 @@
 #include<iostream>
 #include<string>
 #include<vector>
+
 #include<algorithm>
 
 #ifndef CIRCULARSUFFIXARRAY_HPP
@@ -16,7 +17,7 @@ class CircularSuffixArray;
 class CircularSuffixArray{
 	public:
 		CircularSuffixArray();
-		CircularSuffixArray(std::string);
+		CircularSuffixArray(std::string&);
 		~CircularSuffixArray();
 	
 		int length();
@@ -45,7 +46,7 @@ class CircularSuffixArray{
 
 CircularSuffixArray::CircularSuffixArray(){}
 
-CircularSuffixArray::CircularSuffixArray(std::string input_str){
+CircularSuffixArray::CircularSuffixArray(std::string& input_str){
 	for(unsigned int i{0}; i<input_str.size(); ++i){
 		SuffixArray SA_ins(*this,i);
 		this->suffix_list.push_back(SA_ins);
@@ -66,25 +67,7 @@ CircularSuffixArray::SuffixArray::SuffixArray(CircularSuffixArray& parent_class_
 
 bool CircularSuffixArray::SuffixArray::operator<(const SuffixArray& SA_ins_that){
 	int len = this->parent_ptr->origin_str->size();
-	/*std::vector<int> this_SA_index_list;
-	for(int i=this->value; i<len; ++i){
-		this_SA_index_list.push_back(i);
-	}
-	for(int i{0}; i<this->value; ++i){
 	
-		this_SA_index_list.push_back(i);
-	}
-
-	std::vector<int> that_SA_index_list(len);
-	for(int j=SA_ins_that.value; j<len; ++j){
-		that_SA_index_list.push_back(j);
-	}
-	for(int j{0}; j<SA_ins_that.value; ++j){
-	
-		that_SA_index_list.push_back(j);
-	}
-
-*/
 
 	unsigned int i = this->value;
 	unsigned int j = SA_ins_that.value;
