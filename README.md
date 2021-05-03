@@ -34,4 +34,4 @@ What I learned include:
 - Process with files using the **std::filesystem** library
 - Write unit tests with the **Google Test Framework**
 - Process string rapidly with **std::ranges** library
-- Perform compiel-time validation of template with **std::concept**library
+- Perform compiel-time validation of template with **std::concept** library
