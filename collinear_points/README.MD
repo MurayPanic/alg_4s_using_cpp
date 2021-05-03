@@ -2,7 +2,7 @@
 
 These files are c++ implementation of the assignment in the book *Algorithm 4th edition*
 
-Please visit this link for more detials
+Please visit this [link](https://coursera.cs.princeton.edu/algs4/assignments/collinear/specification.php) for more detials
 
 ## BruteCollinearPoints.hpp
 
