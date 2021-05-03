@@ -3,7 +3,7 @@ This respository contains solutions for the assignments for the Algorithm
 course on Coursera( [Part 1](https://www.coursera.org/learn/algorithms-part1) and [Part 2](https://www.coursera.org/learn/algorithms-part2)).
 It is implemented using C++ therefore it may not be uploaded on the Coursera platform.
 
-# Why doing the assigments with C++?
+## Why doing the assigments with C++?
 For one thing, I am not familar with Java. 
 
 For another, I find it a good way to practise C++. Because 
@@ -12,12 +12,12 @@ For another, I find it a good way to practise C++. Because
 I can only refer to java code. Even though the Java and C++ are very similar on grammar, I provide me space for practising.
 - The assignments provide good opertunities to explore latest C++'s feature in various task.
 
-# Any disadvantages?
+## Any disadvantages?
 You may be too focused on the implementation and neglect the algorithm itself.
 But that is the characteristic of C++, it draw too much attention from programmers to the implementation. If you are focusing
 on learing alogrithms, doing the assignments in C++ may not be a good practise.
 
-# What do I learn about C++ after finished the assignments
+## What do I learn about C++ after finished the assignments
 I got a deeper understanding on some concepts in C++ and the usage of various C++ code. I saw them before on **C++ Primer**, but
 not quite understand and don't know how to use. 
 
