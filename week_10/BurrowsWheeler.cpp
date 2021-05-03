@@ -27,6 +27,11 @@ class BurrowsWheeler{
 	private:
 		std::string  data;
 		CircularSuffixArray CSA_ins;
+		union {
+			unsigned int integer;
+			unsigned char char_byte[4];
+		}digit;
+		
 
 };
 
@@ -41,11 +46,22 @@ void BurrowsWheeler::transform(){
 
 	//Find the first
 	
-	for(int i{0}; i<this->CSA_ins.length(); ++i){
-		int index_val = this->CSA_ins.index(i);
+	for( unsigned int i{0}; i<this->CSA_ins.length(); ++i){
+	        unsigned int index_val = this->CSA_ins.index(i);
 		if(index_val==0){
+			/*
 			std::bitset<32> bin_i(i);
 			std::cout<<bin_i;
+			*/
+
+			this->digit.integer=i;
+			std::cout<<this->digit.char_byte[3]
+			         <<this->digit.char_byte[2]
+					<<this->digit.char_byte[1]
+					<<this->digit.char_byte[0];
+			
+			
+
 			break;
 		}
 		
@@ -56,9 +72,12 @@ void BurrowsWheeler::transform(){
 	for(int i{0}; i<this->CSA_ins.length(); ++i){
 		int original_row = this->CSA_ins.index(i);
 		int original_index = original_row==0 ? CSA_ins.length()-1 : original_row-1;
+		std::cout<< this->data.at(original_index);
+		/*
 		int int_char = this->data.at(original_index);
 		std::bitset<8> bin_val(int_char );
 		std::cout<< bin_val;
+		*/
 	}
 	
 }
@@ -66,14 +85,20 @@ void BurrowsWheeler::transform(){
 void BurrowsWheeler::inverseTransform(){
 
 	//Get the first from the data string
-	std::string first_str= this->data.substr(0,32);
-	std::bitset<32> first_bin(first_str);
-	int first = first_bin.to_ulong();
+	std::string first_str= this->data.substr(0,4);
+	digit.char_byte[3]= first_str[0];
+	digit.char_byte[2]= first_str[1];
+	digit.char_byte[1]= first_str[2];
+	digit.char_byte[0]= first_str[3];
+
+	unsigned int first = this->digit.integer;
+
 	
 	//last_col: last column of the sorted suffixes array
-	auto last_col_bin = this->data;
-	last_col_bin.erase(0,32);
+	auto last_col = this->data;
+	last_col.erase(0,4);
 	
+	/*
 	//Convert the binary string to ASCII string;
 	std::string last_col="";
 	std::string tmp="";
@@ -84,17 +109,23 @@ void BurrowsWheeler::inverseTransform(){
 		if( counter%8 == 0){
 			std::bitset<8> digit_bin(tmp);
 		       	int digit_int = digit_bin.to_ulong();
-			char character = digit_int;
+			unsigned char character = digit_int;
 			last_col+= ( character );
 			tmp.clear();
 		}
 	}
-
+	*/
 	//std::cout<< "Last col:"<<last_col<<std::endl;	
 
 	//Deduct the first column of the suffix array
 	//first_col: first column of the sorted suffixes array
-	std::string first_col = last_col;
+	//	      must use unsigned char array, can not use string directly
+	//	      Because string is a char array. The data conversion may 
+	//	      may the program unapplicable to non text data.
+	std::vector<unsigned char> first_col;
+	for(unsigned char item : last_col){
+		first_col.push_back(item);
+	}
 	std::sort(first_col.begin(), first_col.end());
 
 	/*
@@ -106,30 +137,30 @@ void BurrowsWheeler::inverseTransform(){
 
 
 	//Deduct the next[] array
-	std::vector<int> next(first_col.size(), -1);
-	std::vector<int>  freq(257,0); // extra one space is needed for frequency counting
+	std::vector<unsigned int> next(first_col.size(), -1);
+	std::vector<unsigned int>  freq(257,0); // extra one space is needed for frequency counting
 	
 	//Generate frequency table of the first column
 	//It is equivalent to record the first position of a series of consequent characters
-	for(int i{0}; i<first_col.size();++i){
+	for(unsigned int i{0}; i<first_col.size();++i){
 		
 		unsigned char first_character = first_col.at(i);
-		int pos = first_character;
+		unsigned int pos = first_character;
 		//increase the end position:
 		++(freq.at(pos+1) );
 	}
 
-	std::cout<<"I am here"<<std::endl;
+	
 	//Accoumulate the frequency table
-	for(int i{1};i<freq.size();++i){
+	for(unsigned int i{1};i<freq.size();++i){
 		freq.at(i) += freq.at(i-1);
 	
 	}
 
 	
-	for(int i{0}; i<last_col.size(); ++i){
+	for(unsigned int i{0}; i<last_col.size(); ++i){
 		unsigned char last_character = last_col.at(i);
-		int pos = last_character;
+		unsigned int pos = last_character;
 		next.at( freq.at(pos) ) = i;
 		//increase the start position:
 		++freq.at(pos);
@@ -144,9 +175,10 @@ void BurrowsWheeler::inverseTransform(){
 	*/
 
 	//Recover the message
-	auto index =first;
+	unsigned int index =first;
 	for(int i{0}; i< first_col.size();++i){
-		std::cout<< first_col[index];
+		unsigned char character = first_col.at(index);
+		std::cout<< character;
 		index = next[index];
 	
 	}

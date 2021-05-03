@@ -3,6 +3,7 @@
 #include<bitset>
 
 int main(int argc, char* argv[] ){
+	/*
 	char character;
 	std::string tmp="";
 	int counter{0};
@@ -17,6 +18,18 @@ int main(int argc, char* argv[] ){
 		}
 
 	}
+	*/
+	char character;
+	while(std::cin >> character){
+		
+			std::bitset<8> bin_input(character);
+			std::cout <<std::hex << bin_input.to_ulong()  << " ";
+			
+			
+		}
+
+	
+
 	std::cout<<std::endl;
 
 }

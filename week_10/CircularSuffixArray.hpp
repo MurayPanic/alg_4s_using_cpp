@@ -20,19 +20,19 @@ class CircularSuffixArray{
 		~CircularSuffixArray();
 	
 		int length();
-		int index(int);
+		unsigned int index(unsigned int);
 	
 	private:
 		class SuffixArray{
 			public:
-				SuffixArray(CircularSuffixArray&, int);
+				SuffixArray(CircularSuffixArray&, unsigned int);
 				bool operator<(const SuffixArray&);
-				int value;
+				unsigned int value;
 			private:
 				CircularSuffixArray* parent_ptr;
 		};
 		std::vector<SuffixArray> suffix_list;
-		std::vector<int> index_array;
+		std::vector<unsigned int> index_array;
 		std::string* origin_str;
 		void get_sorted_suffix_list();
 
@@ -46,7 +46,7 @@ class CircularSuffixArray{
 CircularSuffixArray::CircularSuffixArray(){}
 
 CircularSuffixArray::CircularSuffixArray(std::string input_str){
-	for(int i{0}; i<input_str.size(); ++i){
+	for(unsigned int i{0}; i<input_str.size(); ++i){
 		SuffixArray SA_ins(*this,i);
 		this->suffix_list.push_back(SA_ins);
 	}
@@ -58,7 +58,7 @@ CircularSuffixArray::CircularSuffixArray(std::string input_str){
 
 CircularSuffixArray::~CircularSuffixArray(){}
 
-CircularSuffixArray::SuffixArray::SuffixArray(CircularSuffixArray& parent_class_ptr,int index): value(index), parent_ptr(&parent_class_ptr){
+CircularSuffixArray::SuffixArray::SuffixArray(CircularSuffixArray& parent_class_ptr,unsigned int index): value(index), parent_ptr(&parent_class_ptr){
 
 }
 
@@ -86,14 +86,16 @@ bool CircularSuffixArray::SuffixArray::operator<(const SuffixArray& SA_ins_that)
 
 */
 
-	int i = this->value;
-	int j= SA_ins_that.value;
+	unsigned int i = this->value;
+	unsigned int j = SA_ins_that.value;
 
 	for(int k{0}; k<len; ++k){
 		if(this->parent_ptr->origin_str->at(i) != this->parent_ptr->origin_str->at(j) ){
-		
-		return this->parent_ptr->origin_str->at(i) <this->parent_ptr->origin_str->at(j) ;
-	}
+			unsigned char  char_i = this->parent_ptr->origin_str->at(i);
+			unsigned char  char_j = this->parent_ptr->origin_str->at(j);
+
+			return char_i < char_j ;
+		}
 
 		++i;
 		++j;
@@ -119,8 +121,7 @@ int CircularSuffixArray::length(){
 	return this->index_array.size();
 }
 
-int CircularSuffixArray::index(int i){
-
+unsigned int CircularSuffixArray::index(unsigned int i){
 	return this->index_array.at(i);
 }
 

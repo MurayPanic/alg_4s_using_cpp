@@ -17,6 +17,10 @@ class MoveToFront{
 
 	private:
 		std::string data;
+		union {
+			unsigned int integer;
+			unsigned char char_byte;
+		}digit;
 
 };
 
@@ -29,14 +33,11 @@ void MoveToFront::encode(){
 	}
 
 	for (unsigned char character : data){
-		int index = character;
+		unsigned int index = character;
 		int pos = radix[index];
-		//To display result in hexidecimal
-		//std::cout<<std::hex << pos<<" ";
-
-		//output the result in binary
-		std::bitset<8> bin_pos(pos);
-		std::cout <<  bin_pos;
+		
+		this->digit.integer=pos;
+		std::cout << this->digit.char_byte;
 
 		for(int i{0}; i<256; ++i){
 			radix[i]= radix[i]<pos? radix[i]+1 : radix[i] ;
@@ -50,28 +51,25 @@ void MoveToFront::encode(){
 
 void MoveToFront::decode(){
 
-	int pos[256];
+	unsigned int pos[256];
 	for(int i{0}; i<256; ++i){
 		pos[i]=i;
 	}
 	
 	
-	std::string tmp="";
-	int counter{0};
 	for (char character : data){
-		++counter;
-		tmp+=character;
-		if( counter%8 ==0){
-			std::bitset<8> bin_index(tmp);
-			int index = bin_index.to_ulong();
+			this->digit.char_byte=character;
+		
+			
+			int index = this->digit.integer;
 			unsigned char radix = pos[index];
 			std::cout << radix;
 			for(int i=index; i>0; --i){
 				pos[i]= pos[i-1];
 			}
 			pos[0]= radix;
-			tmp.clear();
-		}
+			
+		
 
 	}
 
