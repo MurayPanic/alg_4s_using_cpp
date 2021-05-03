@@ -1,4 +1,4 @@
-#BOGGLE
+# BOGGLE
 
 These files are the C++ implementation of the "Baseball Elimination " assignment in the book *Algorithms 4 th edition*
 
@@ -6,7 +6,7 @@ Please visit the [coursera](https://coursera.cs.princeton.edu/algs4/assignments/
 
 ## BoggleBoard.hpp
 
-The BoggleBoard class is used for representing a Boggle board. This head file is the C++ implementation of the [BoggleBoard.java](https://coursera.cs.princeton.edu/algs4/assignments/boggle/files/BoggleBoard.java). THe corresponding test file is provided. You can compile the unit test with the following command:
+The BoggleBoard class is used for representing a Boggle board. This head file is the C++ implementation of the [BoggleBoard.java](https://coursera.cs.princeton.edu/algs4/assignments/boggle/files/BoggleBoard.java). The corresponding test file is provided. You can compile the unit test with the following command:
 
 ```bash
 $ g++-10 test_boggleboard.cpp -o test_boggleboard --std=c++2a -lgtest -lpthread

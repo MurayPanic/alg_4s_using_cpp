@@ -1,4 +1,4 @@
-#SEAM CARVING
+# SEAM CARVING
 
 These files are the C++ implementation of the seam carver assignment in the book *Algorithms 4th edition*
 
