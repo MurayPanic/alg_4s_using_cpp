@@ -85,7 +85,7 @@ clang++10 test_line_segment.cpp -o test_line_segment --std=c++2a -lgtest -lpthre
 
 ## draw.hpp
 
-The visualization function are not embedded into the *Point* class and *LineSegment* class. This is a little bit different from the original requirements. It visualized the points with the matplotlib library using the matplotlib-cpp. The matplotlib-cpp  library is included. I compiled my files with python 3.6.
+The visualization function are not embedded into the *Point* class and *LineSegment* class. This is a little bit different from the original requirements. It visualized the points with the matplotlib library using the matplotlib-cpp. The [matplotlib-cpp](https://github.com/lava/matplotlib-cpp)  library is included. I compiled my files with python 3.6.
 
 The command for compiling unit test is :
 
